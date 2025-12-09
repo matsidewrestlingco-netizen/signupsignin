@@ -697,3 +697,135 @@ textarea {
   border-radius: 6px;
   border: none;
 }
+
+/* ============================================
+   ADMIN THEME REFRESH (MATSIDE BLUE)
+   ============================================ */
+
+.page-admin {
+  background: #f3f4f6; /* Light gray */
+  color: #1f2937; /* Dark text */
+  min-height: 100vh;
+}
+
+/* Top Bar */
+.top-bar {
+  background: #1e40af; /* Matside Blue */
+  padding: 12px 0;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.top-bar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 900px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.brand-logo {
+  height: 32px;
+  margin-right: 10px;
+}
+
+.top-nav a {
+  color: #e5e7eb;
+  margin-left: 16px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.top-nav a:hover {
+  color: #ffffff;
+}
+
+/* Card */
+.card {
+  background: #ffffff; /* Clean white card surface */
+  border: 1px solid #d1d5db; /* Subtle border */
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Slot Cards */
+.slot-card {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* Buttons */
+.btn-primary {
+  background: #1e40af;
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #3b82f6;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #d1d5db;
+}
+
+/* Form Styles */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px;
+  background: #ffffff;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  outline: 2px solid #3b82f6;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.section-title,
+.card-title,
+.card-title-sm {
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-weight: 700;
+}
