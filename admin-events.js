@@ -35,7 +35,7 @@ async function loadEvents() {
     return;
   }
 
-  allEvents = events || [];
+  allEvents = (events || []).filter(ev => !ev.deleted_at);
 
   // Fetch slot stats
   const { data: slots, error: slotError } = await supabase
@@ -149,6 +149,9 @@ function renderEvents() {
       <div class="admin-event-actions">
         <a class="btn-primary admin-btn" href="admin-edit-event.html?id=${ev.id}">Edit</a>
         <a class="btn-ghost admin-btn" href="event.html?id=${ev.id}" target="_blank">Public View</a>
+        <button class="btn-danger admin-btn delete-event-btn" data-event-id="${ev.id}">
+          Delete
+        </button>
       </div>
     `;
 
@@ -178,6 +181,32 @@ function formatDate(iso) {
 searchInput.addEventListener("input", renderEvents);
 sortSelect.addEventListener("change", renderEvents);
 toggleUpcoming.addEventListener("change", renderEvents);
+
+/* --------------------------
+   Delete Event (Soft Delete)
+-------------------------- */
+eventsContainer.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".delete-event-btn");
+  if (!btn) return;
+
+  const eventId = btn.dataset.eventId;
+
+  const ok = confirm("Are you sure you want to delete this event? This action can be undone, but it will disappear from public view.");
+  if (!ok) return;
+
+  const { error } = await supabase
+    .from("events")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", eventId);
+
+  if (error) {
+    alert("Error deleting event. Check console.");
+    console.error(error);
+    return;
+  }
+
+  await loadEvents();
+});
 
 /* --------------------------
    Init
