@@ -305,3 +305,175 @@ textarea {
 .status-error {
   color: #f87171;
 }
+
+/* ============================================================
+   PUBLIC EVENT PAGE – CLEAN LAYOUT
+   ============================================================ */
+
+.page-event {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.event-main {
+  max-width: 960px;
+  margin: 24px auto 32px;
+  padding: 0 16px;
+}
+
+.event-header-card {
+  margin-bottom: 20px;
+}
+
+.event-breadcrumb {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+}
+
+.event-breadcrumb a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.event-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.event-title {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.event-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.event-description {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+/* Slots */
+
+.slots-section {
+  margin-bottom: 24px;
+}
+
+.slots-heading {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.slot-category-group {
+  margin-bottom: 18px;
+}
+
+.slot-category-heading {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.slot-card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 700px) {
+  .slot-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.slot-card {
+  padding: 12px 14px;
+}
+
+.slot-card-title {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.slot-card-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.slot-card-desc {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.slot-card-stats {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.slot-card-footer {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.slot-card-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  margin-left: 6px;
+}
+
+/* Override default badges to look consistent here */
+.slot-card-badge.badge-open {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.slot-card-badge.badge-full {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.slot-btn-full {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Signup section */
+
+.signup-card {
+  margin-top: 8px;
+}
+
+.signup-title {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.signup-subtitle {
+  margin: 0 0 8px;
+  font-size: 0.87rem;
+  color: #4b5563;
+}
+
+.signup-selected {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.signup-selected-active {
+  color: #111827;
+  font-weight: 600;
+}
