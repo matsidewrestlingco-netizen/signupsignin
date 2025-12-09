@@ -70,6 +70,24 @@ const signupStatus = document.getElementById("signup-status");
 
 let currentSlots = []; // cached slots for re-render after signup
 
+/* ---- Aggregate totals ---- */
+const totalCapacity = currentSlots.reduce(
+  (sum, s) => sum + (s.quantity_total || 0),
+  0
+);
+const totalSignups = currentSlots.reduce(
+  (sum, s) => sum + (s.signups?.length || 0),
+  0
+);
+const fillRate =
+  totalCapacity > 0
+    ? Math.round((totalSignups / totalCapacity) * 100)
+    : 0;
+
+/* Update event stats in header */
+const statsEl = document.getElementById("event-stats");
+statsEl.textContent = `${totalSignups} signups • ${totalCapacity} total spots (${fillRate}% full)`;
+
 /* ------------------ Load Event + Slots ------------------ */
 
 async function loadEvent() {
