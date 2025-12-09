@@ -2,76 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Event – Matside Wrestling</title>
+  <title>signUPsignIN - Event Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body class="page-event">
   <header>
      <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
-     <span class="site-title">Event SignUP</span>
   </header>
 
-  <main class="event-main">
-    <!-- EVENT HEADER -->
-    <section id="event-header" class="card event-header-card">
-      <p id="event-breadcrumb" class="event-breadcrumb">
-        <a href="index.html">← Back to Events</a>
-      </p>
-      <h2 id="event-title" class="event-title">Loading event…</h2>
-      <p id="event-datetime" class="event-meta"></p>
-      <p id="event-location" class="event-meta"></p>
-      <p id="event-description" class="event-description"></p>
-      <p id="event-stats" class="event-meta" style="margin-top:8px;"></p>
-      <p id="event-status-message" class="status-message"></p>
-    </section>
+<main class="container">
+    <h1 id="event-title" class="page-title"></h1>
+    <p id="event-date" class="event-meta"></p>
+    <p id="event-location" class="event-meta"></p>
+    <p id="event-description" class="event-description"></p>
 
-    <!-- SLOTS -->
-    <section id="slots-section" class="slots-section">
-      <h3 class="slots-heading">Available Spots</h3>
-      <div id="slots-container">
-        <!-- Slot groups + cards injected here -->
-      </div>
-    </section>
+    <h2 class="section-title">Available Slots</h2>
+    <div id="slot-list"></div>
 
-    <!-- SIGNUP FORM -->
-    <section id="signup-section" class="card signup-card">
-      <h3 class="signup-title">Sign Up</h3>
-      <p class="signup-subtitle">
-        Select a slot above, then confirm your info here.
-      </p>
-
-      <p id="signup-selected-label" class="signup-selected">
-        No slot selected yet.
-      </p>
-
-      <form id="signup-form" class="form-grid">
-        <input type="hidden" id="signup-slot-id" />
-
-        <div class="form-field">
-          <label for="signup-name">Your Name<span class="req">*</span></label>
-          <input id="signup-name" type="text" required />
-        </div>
-
-        <div class="form-field">
-          <label for="signup-email">Email<span class="req">*</span></label>
-          <input id="signup-email" type="email" required />
-        </div>
-
-        <div class="form-field">
-          <label for="signup-note">Note (optional)</label>
-          <textarea id="signup-note" rows="2"></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Confirm Signup</button>
-        </div>
-
-        <p id="signup-status" class="status-message"></p>
-      </form>
-    </section>
+    <p id="message" class="message"></p>
   </main>
 
-  <script type="module" src="./event.js"></script>
+  <script type="module" src="event.js"></script>
 </body>
 </html>
