@@ -2,40 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Matside Admin Login</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Matside – Admin Create Event</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
-  <header>
-    <h1>Matside – Admin Login</h1>
+<body class="page page-admin">
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <span class="brand-mark">MS</span>
+        <span class="brand-text">Matside Wrestling – Admin</span>
+      </div>
+      <nav class="top-nav">
+        <a href="index.html">Public Events</a>
+        <a href="admin-events.html">Manage Events</a>
+        <a href="admin.html" class="active">Create Event</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <div class="card">
-      <h2>Admin Login</h2>
-      <p>Enter the admin password to continue.</p>
+  <main class="main-wrap">
+    <section class="card">
+      <h1 class="card-title">Create New Event</h1>
+      <p class="card-subtitle">
+        Add a new match night, dual, or tournament. You can attach slots and sign-ups later.
+      </p>
 
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
+      <form id="create-event-form" class="form-grid">
+        <div class="form-field">
+          <label for="title">Event name<span class="req">*</span></label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            required
+            maxlength="120"
+            placeholder="Shaler vs North Hills – Varsity Dual"
+          />
+        </div>
 
-      <p id="error" style="color: #b91c1c; margin-top: 10px;"></p>
-    </div>
+        <div class="form-field">
+          <label for="location">Location</label>
+          <input
+            id="location"
+            name="location"
+            type="text"
+            maxlength="160"
+            placeholder="Shaler Area High School Gym"
+          />
+        </div>
+
+        <div class="form-field form-field-inline">
+          <div>
+            <label for="date">Date<span class="req">*</span></label>
+            <input id="date" name="date" type="date" required />
+          </div>
+          <div>
+            <label for="startTime">Start time<span class="req">*</span></label>
+            <input id="startTime" name="startTime" type="time" required />
+          </div>
+          <div>
+            <label for="endTime">End time</label>
+            <input id="endTime" name="endTime" type="time" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            maxlength="600"
+            placeholder="Short description – who’s wrestling, divisions, anything parents should know."
+          ></textarea>
+        </div>
+
+        <div class="form-field form-field-inline">
+          <label class="checkbox-label">
+            <input id="isPublic" name="isPublic" type="checkbox" checked />
+            <span>Show this event on the public events page</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submit-btn" class="btn-primary">
+            Create event
+          </button>
+          <button type="button" id="reset-btn" class="btn-ghost">
+            Reset form
+          </button>
+        </div>
+
+        <p id="status" class="status-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="card info-card">
+      <h2 class="card-title-sm">What happens next?</h2>
+      <ul class="info-list">
+        <li>The event is saved into your <code>events</code> table in Supabase.</li>
+        <li>It will appear on the public <strong>Events</strong> page if “Show on public page” is checked.</li>
+        <li>You can attach slots (volunteers, food, etc.) from your <strong>Manage Events</strong> screen.</li>
+      </ul>
+    </section>
   </main>
 
-  <script type="module">
-    import { ADMIN_PASSWORD } from "./admin.js";
-
-    window.login = function () {
-      const input = document.getElementById("password").value.trim();
-      const errorEl = document.getElementById("error");
-
-      if (input === ADMIN_PASSWORD) {
-        localStorage.setItem("matside_admin", "true");
-        window.location.href = "admin-events.html";
-      } else {
-        errorEl.textContent = "Incorrect password. Try again.";
-      }
-    };
-  </script>
+  <!-- Wire up Supabase + admin logic -->
+  <script type="module" src="./admin.js"></script>
 </body>
 </html>
