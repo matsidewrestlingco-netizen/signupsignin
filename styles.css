@@ -477,3 +477,104 @@ textarea {
   color: #111827;
   font-weight: 600;
 }
+
+/* ============================================================
+   ADMIN EVENTS DASHBOARD (Hybrid Style)
+   ============================================================ */
+
+.dashboard-main {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.dashboard-subtitle {
+  margin: 4px 0 16px;
+  color: #cbd5e1;
+}
+
+.dashboard-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #f3f4f6;
+  min-width: 180px;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e2e8f0;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 700px) {
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.admin-event-card {
+  background: #ffffff;
+  color: #111827;
+}
+
+.admin-event-header {
+  margin-bottom: 10px;
+}
+
+.admin-event-title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.admin-event-datetime {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin: 2px 0;
+}
+
+.admin-event-location {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.admin-event-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 0.85rem;
+}
+
+.admin-event-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-btn {
+  flex: 1;
+  text-align: center;
+}
