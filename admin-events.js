@@ -148,6 +148,7 @@ function renderEvents() {
 
       <div class="admin-event-actions">
         <a class="btn-primary admin-btn" href="admin-edit-event.html?id=${ev.id}">Edit</a>
+        <a class="btn-ghost admin-btn" href="admin-signups.html?id=${ev.id}">View Signups</a>
         <a class="btn-ghost admin-btn" href="event.html?id=${ev.id}" target="_blank">Public View</a>
         <button class="btn-danger admin-btn delete-event-btn" data-event-id="${ev.id}">
           Delete
