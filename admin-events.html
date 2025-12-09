@@ -3,73 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <title>Matside Admin – Events</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
-  <header>
-    <h1>Admin – Events</h1>
+
+<body class="page-admin">
+  <!-- Admin Header -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <span class="brand-mark">MS</span>
+        <span class="brand-text">Matside Admin Dashboard</span>
+      </div>
+
+      <nav class="top-nav">
+        <a href="admin.html">Create Event</a>
+        <a href="admin-events.html" class="active">Manage Events</a>
+        <a href="index.html">Public Events</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <button onclick="logout()" style="float:right;">Logout</button>
-    <h2>Manage Events</h2>
+  <!-- Main -->
+  <main class="dashboard-main">
 
-    <p>
-      <a class="button-link" href="admin-edit-event.html">Create New Event</a>
-    </p>
+    <!-- Dashboard Heading -->
+    <section class="dashboard-header">
+      <h1>Events</h1>
+      <p class="dashboard-subtitle">
+        Manage all scheduled events, view signups, and edit details.
+      </p>
+    </section>
 
-    <div id="events"></div>
+    <!-- Filters -->
+    <section class="dashboard-filters">
+      <input 
+        id="search-input"
+        type="text"
+        class="input search-input"
+        placeholder="Search by event name or location..."
+      />
+
+      <select id="sort-select" class="input select-input">
+        <option value="date-asc">Date: Soonest first</option>
+        <option value="date-desc">Date: Latest first</option>
+        <option value="title-asc">Title: A → Z</option>
+        <option value="title-desc">Title: Z → A</option>
+      </select>
+
+      <label class="toggle-container">
+        <input type="checkbox" id="toggle-upcoming" checked />
+        <span>Upcoming only</span>
+      </label>
+    </section>
+
+    <!-- Event Grid -->
+    <section id="events-container" class="events-grid">
+      <!-- Cards inserted dynamically -->
+    </section>
+
   </main>
 
-  <script type="module">
-    import { supabase } from "./supabaseClient.js";
-    import { requireAdmin } from "./admin.js";
-
-    requireAdmin();
-
-    async function loadEvents() {
-      const container = document.getElementById("events");
-      container.innerHTML = "<p>Loading…</p>";
-
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .order("start_time", { ascending: true });
-
-      if (error) {
-        container.innerHTML = "<p>Error loading events.</p>";
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        container.innerHTML = "<p>No events found.</p>";
-        return;
-      }
-
-      container.innerHTML = data
-        .map(ev => {
-          const dateStr = new Date(ev.start_time).toLocaleString();
-          return `
-          <div class="card">
-            <h3>${ev.title}</h3>
-            <p>${dateStr}</p>
-            ${ev.location ? `<p>${ev.location}</p>` : ""}
-
-            <a class="button-link" href="admin-edit-event.html?id=${ev.id}">
-              Edit Event / Slots
-            </a>
-          </div>
-        `;
-        })
-        .join("");
-    }
-
-    window.logout = function () {
-      localStorage.removeItem("matside_admin");
-      window.location.href = "admin.html";
-    };
-
-    loadEvents();
-  </script>
+  <script type="module" src="./admin-events.js"></script>
 </body>
 </html>
