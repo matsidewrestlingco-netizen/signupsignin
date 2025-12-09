@@ -600,3 +600,100 @@ textarea {
   font-size: 1.4rem;
   font-weight: 700;
 }
+
+.slot-category-title {
+  margin-top: 24px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.slot-card {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.slot-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.slot-time {
+  color: #555;
+  font-size: 14px;
+}
+
+.slot-desc {
+  margin-top: 4px;
+  color: #444;
+  font-size: 14px;
+}
+
+.slot-counts {
+  text-align: right;
+}
+
+.full {
+  color: red;
+  font-weight: bold;
+}
+.remaining {
+  color: green;
+  font-weight: bold;
+}
+
+.sign-btn {
+  margin-top: 12px;
+  background: #1e40af;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.signup-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signup-form input,
+.signup-form textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.hidden {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-btn {
+  background: green;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.cancel-btn {
+  background: #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+}
