@@ -8,12 +8,15 @@
 </head>
 
 <body class="page-admin">
+
+  <!-- HEADER -->
   <header class="top-bar">
     <div class="top-bar-inner">
       <div class="brand">
-        <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" /> <br>
-        <span class="site-title">Admin Edit Events</span>
+        <img src="assetWHITE.svg" class="site-logo" />
+        <span class="site-title">Edit Event</span>
       </div>
+
       <nav class="top-nav">
         <a href="index.html">Public</a>
         <a href="admin-events.html">Manage Events</a>
@@ -23,116 +26,112 @@
   </header>
 
   <main class="main-wrap">
+
+    <!-- EVENT DETAILS -->
     <section class="card">
       <h1 class="card-title">Edit Event</h1>
-      <p class="card-subtitle">Update event details and manage all signup slots.</p>
+      <p class="card-subtitle">Modify event details and update available slots.</p>
 
-      <form id="event-form" class="form-grid">
+      <div class="form-grid">
+
         <div class="form-field">
           <label for="title">Event Name</label>
-          <input id="title" type="text" required>
+          <input id="title" type="text" />
         </div>
 
         <div class="form-field">
           <label for="location">Location</label>
-          <input id="location" type="text">
-        </div>
-
-        <div class="form-field-inline">
-          <div>
-            <label for="date">Date</label>
-            <input id="date" type="date" required>
-          </div>
-
-          <div>
-            <label for="startTime">Start Time</label>
-            <input id="startTime" type="time" required>
-          </div>
-
-          <div>
-            <label for="endTime">End Time</label>
-            <input id="endTime" type="time">
-          </div>
+          <input id="location" type="text" />
         </div>
 
         <div class="form-field">
+          <label for="date">Date</label>
+          <input id="date" type="date" />
+        </div>
+
+        <div class="form-field">
+          <label for="start_time">Start Time</label>
+          <input id="start_time" type="time" />
+        </div>
+
+        <div class="form-field">
+          <label for="end_time">End Time</label>
+          <input id="end_time" type="time" />
+        </div>
+
+        <div class="form-field full-width">
           <label for="description">Description</label>
           <textarea id="description" rows="3"></textarea>
         </div>
 
-        <div class="form-field">
-          <label class="checkbox-label">
-            <input id="isPublic" type="checkbox">
-            <span>Show on public events page</span>
-          </label>
-        </div>
+      </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Save Event</button>
-        </div>
-
-        <p id="event-status" class="status-message"></p>
-      </form>
+      <button id="save-event-btn" class="btn-primary" style="margin-top: 12px;">
+        Save Event
+      </button>
     </section>
 
     <!-- SLOT MANAGEMENT -->
     <section class="card">
       <h2 class="card-title-sm">Slots</h2>
 
-      <div id="slot-list">
-        <!-- Existing slots inserted dynamically -->
+      <div id="existing-slots">
+        <!-- JS loads existing slots here -->
       </div>
 
       <hr style="border-color:#1f2937; margin: 1.5rem 0;">
 
       <h3>Add New Slot</h3>
 
-      <form id="new-slot-form" class="form-grid">
+      <div class="form-grid">
+
         <div class="form-field">
-          <label>Name</label>
-          <input id="slot-name" required placeholder="Example: Score Table">
+          <label for="slot-name">Slot Name</label>
+          <input id="slot-name" />
         </div>
 
         <div class="form-field">
-          <label>Category</label>
+          <label for="slot-category">Category</label>
           <select id="slot-category">
             <option value="volunteer">Volunteers</option>
             <option value="food">Food Donations</option>
             <option value="concessions">Concessions</option>
-            <option value="admissions">Admissions / Front Desk</option>
+            <option value="admissions">Admissions</option>
             <option value="matcrew">Mat Crew</option>
             <option value="other">Other</option>
           </select>
         </div>
 
-        <div class="form-field-inline">
-          <div>
-            <label>Start Time</label>
-            <input id="slot-start" type="time">
-          </div>
-
-          <div>
-            <label>End Time</label>
-            <input id="slot-end" type="time">
-          </div>
+        <div class="form-field">
+          <label for="slot-start">Start Time</label>
+          <input id="slot-start" type="time" />
         </div>
 
         <div class="form-field">
-          <label>Quantity</label>
-          <input id="slot-qty" type="number" min="1" required value="1">
+          <label for="slot-end">End Time</label>
+          <input id="slot-end" type="time" />
         </div>
 
         <div class="form-field">
-          <label>Description</label>
+          <label for="slot-qty">Quantity</label>
+          <input id="slot-qty" type="number" min="1" value="1" />
+        </div>
+
+        <div class="form-field full-width">
+          <label for="slot-description">Description</label>
           <textarea id="slot-description" rows="2"></textarea>
         </div>
 
-        <button type="submit" class="btn-primary">Add Slot</button>
-        <p id="slot-status" class="status-message"></p>
-      </form>
+      </div>
+
+      <button id="add-slot-btn" class="btn-primary" style="margin-top: 12px;">
+        Add Slot
+      </button>
+
     </section>
+
   </main>
 
-  <script type="module" src="./admin-edit-event.js"></script>
+  <script type="module" src="./admin-edit-event.js?v=4"></script>
 </body>
 </html>
