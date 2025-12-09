@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matside Admin Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Matside – Admin Login</h1>
+  </header>
 
+  <main>
+    <div class="card">
+      <h2>Admin Login</h2>
+      <p>Enter the admin password to continue.</p>
+
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+
+      <p id="error" style="color: #b91c1c; margin-top: 10px;"></p>
+    </div>
+  </main>
+
+  <script type="module">
+    import { ADMIN_PASSWORD } from "./admin.js";
+
+    window.login = function () {
+      const input = document.getElementById("password").value.trim();
+      const errorEl = document.getElementById("error");
+
+      if (input === ADMIN_PASSWORD) {
+        localStorage.setItem("matside_admin", "true");
+        window.location.href = "admin-events.html";
+      } else {
+        errorEl.textContent = "Incorrect password. Try again.";
+      }
+    };
+  </script>
+</body>
+</html>
