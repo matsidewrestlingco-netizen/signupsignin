@@ -1,1 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matside Signups – Event</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1 id="event-title">Event</h1>
+  </header>
 
+  <main>
+    <div id="event-meta" class="card"></div>
+
+    <h2>Available Slots</h2>
+    <div id="slots"></div>
+
+    <p id="message" style="margin-top: 12px;"></p>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabaseClient.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get("id");
+
+    const titleEl = document.getElementById("event-title");
+    const metaEl = document.getElementById("event-meta");
+    const slotsEl = document.getElementById("slots");
+    const msgEl = document.getElementById("message");
+
+    async function loadEvent() {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
+        .single();
+
+      if (error || !data) {
+        metaEl.innerHTML = "<p>Event not found.</p>";
+        return;
+      }
+
+      const ev = data;
+
+      titleEl.textContent = ev.title;
+      const dateStr = new Date(ev.start_time).toLocaleString();
+
+      metaEl.innerHTML = `
+        <p><strong>Date:</strong> ${dateStr}</p>
+        ${ev.location ? `<p><strong>Location:</strong> ${ev.location}</p>` : ""}
+        ${ev.description ? `<p>${ev.description}</p>` : ""}
+      `;
+    }
+
+    async function loadSlots() {
+      const { data, error } = await supabase
+        .from("slots")
+        .select("*, signups(*)")
+        .eq("event_id", eventId);
+
+      if (error) {
+        slotsEl.innerHTML = "<p>Error loading slots.</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        slotsEl.innerHTML = "<p>No slots created yet.</p>";
+        return;
+      }
+
+      slotsEl.innerHTML = data.map(slot => {
+        const filled = slot.signups.length;
+        const remaining = slot.quantity_total - filled;
+        const full = remaining <= 0;
+
+        return `
+          <div class="card">
+            <h3>${slot.name}</h3>
+            ${slot.description ? `<p>${slot.description}</p>` : ""}
+            <p>
+              <span class="badge ${full ? "badge-full" : "badge-open"}">
+                ${filled}/${slot.quantity_total} filled
+              </span>
+            </p>
+
+            ${
+              full
+                ? `<p>This slot is full.</p>`
+                : `
+              <input id="name-${slot.id}" placeholder="Your name" />
+              <input id="email-${slot.id}" placeholder="Your email" />
+              <textarea id="note-${slot.id}" placeholder="Note (optional)"></textarea>
+              <button onclick="signup('${slot.id}')">Sign Up</button>
+            `
+            }
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.signup = async function (slotId) {
+      msgEl.textContent = "";
+
+      const full_name = document.getElementById(`name-${slotId}`).value.trim();
+      const email = document.getElementById(`email-${slotId}`).value.trim();
+      const note = document.getElementById(`note-${slotId}`).value.trim();
+
+      if (!full_name || !email) {
+        msgEl.style.color = "#b91c1c";
+        msgEl.textContent = "Name and email required.";
+        return;
+      }
+
+      const { error } = await supabase.from("signups").insert({
+        slot_id: slotId,
+        full_name,
+        email,
+        note: note || null
+      });
+
+      if (error) {
+        msgEl.style.color = "#b91c1c";
+        msgEl.textContent = "Error saving signup.";
+        return;
+      }
+
+      msgEl.style.color = "#166534";
+      msgEl.textContent = "Signed up!";
+
+      loadSlots();
+    };
+
+    loadEvent();
+    loadSlots();
+  </script>
+</body>
+</html>
