@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matside Admin – Events</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin – Events</h1>
+  </header>
 
+  <main>
+    <button onclick="logout()" style="float:right;">Logout</button>
+    <h2>Manage Events</h2>
+
+    <p>
+      <a class="button-link" href="admin-edit-event.html">Create New Event</a>
+    </p>
+
+    <div id="events"></div>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabaseClient.js";
+    import { requireAdmin } from "./admin.js";
+
+    requireAdmin();
+
+    async function loadEvents() {
+      const container = document.getElementById("events");
+      container.innerHTML = "<p>Loading…</p>";
+
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .order("start_time", { ascending: true });
+
+      if (error) {
+        container.innerHTML = "<p>Error loading events.</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = "<p>No events found.</p>";
+        return;
+      }
+
+      container.innerHTML = data
+        .map(ev => {
+          const dateStr = new Date(ev.start_time).toLocaleString();
+          return `
+          <div class="card">
+            <h3>${ev.title}</h3>
+            <p>${dateStr}</p>
+            ${ev.location ? `<p>${ev.location}</p>` : ""}
+
+            <a class="button-link" href="admin-edit-event.html?id=${ev.id}">
+              Edit Event / Slots
+            </a>
+          </div>
+        `;
+        })
+        .join("");
+    }
+
+    window.logout = function () {
+      localStorage.removeItem("matside_admin");
+      window.location.href = "admin.html";
+    };
+
+    loadEvents();
+  </script>
+</body>
+</html>
