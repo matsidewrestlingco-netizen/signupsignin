@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matside Signups – Events</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Matside Signups – Events</h1>
+  </header>
 
+  <main>
+    <div id="events"></div>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabaseClient.js";
+
+    async function loadEvents() {
+      const container = document.getElementById("events");
+      container.innerHTML = "<p>Loading events…</p>";
+
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .order("start_time", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = "<p>Error loading events.</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = "<p>No events available yet.</p>";
+        return;
+      }
+
+      container.innerHTML = data.map(ev => {
+        const dateStr = new Date(ev.start_time).toLocaleString();
+        return `
+          <div class="card">
+            <h2>${ev.title}</h2>
+            <p>${dateStr}</p>
+            ${ev.location ? `<p>${ev.location}</p>` : ""}
+            <a class="button-link" href="event.html?id=${ev.id}">
+              View & Sign Up
+            </a>
+          </div>
+        `;
+      }).join("");
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>
