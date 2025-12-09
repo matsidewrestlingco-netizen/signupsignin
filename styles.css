@@ -578,3 +578,25 @@ textarea {
   flex: 1;
   text-align: center;
 }
+
+/* Header Layout */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #213B8D;   /* Your brand blue */
+  color: white;
+}
+
+/* Logo */
+.site-logo {
+  height: 42px;
+  width: auto;
+}
+
+/* Title */
+.site-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
