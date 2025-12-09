@@ -1,3 +1,7 @@
+/* ============================================================
+   GLOBAL BASE STYLES (applies to all pages)
+   ============================================================ */
+
 * {
   box-sizing: border-box;
 }
@@ -15,18 +19,36 @@ header {
   padding: 16px 24px;
 }
 
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
 main {
   max-width: 900px;
   margin: 24px auto;
   padding: 0 16px;
 }
 
+/* PUBLIC CARD STYLE (white cards) */
 .card {
   background: white;
   border-radius: 10px;
   padding: 16px 20px;
   margin-bottom: 16px;
   border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card h2,
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.card p {
+  margin: 4px 0;
+  color: #4b5563;
 }
 
 .button-link,
@@ -37,7 +59,14 @@ button {
   border-radius: 6px;
   display: inline-block;
   text-decoration: none;
+  border: none;
   cursor: pointer;
+  font-size: 14px;
+}
+
+.button-link:hover,
+button:hover {
+  background: #1d4ed8;
 }
 
 input,
@@ -47,6 +76,7 @@ textarea {
   margin-top: 6px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
+  font-size: 14px;
 }
 
 .badge {
@@ -65,15 +95,16 @@ textarea {
   color: #166534;
 }
 
-/* --- Admin layout + form --- */
+/* ============================================================
+   ADMIN MODE — DARK THEME (ONLY WHEN BODY HAS .page-admin)
+   ============================================================ */
 
 .page-admin {
   background: #0b1020;
   color: #f3f4f6;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  margin: 0;
 }
 
+/* Top bar */
 .top-bar {
   background: #0f172a;
   border-bottom: 1px solid #1f2937;
@@ -128,6 +159,7 @@ textarea {
   color: #f97316;
 }
 
+/* Admin layout wrapper */
 .main-wrap {
   max-width: 960px;
   margin: 1.5rem auto 2rem;
@@ -139,18 +171,23 @@ textarea {
 
 @media (max-width: 900px) {
   .main-wrap {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
-.card {
+/* ADMIN CARD STYLE (override public card) */
+.page-admin .card {
   background: #020617;
-  border-radius: 0.75rem;
   border: 1px solid #1f2937;
-  padding: 1.5rem 1.25rem 1.75rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  color: #f3f4f6;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
 }
 
+.page-admin .card p {
+  color: #cbd5e1;
+}
+
+/* Titles */
 .card-title {
   font-size: 1.4rem;
   margin: 0 0 0.25rem;
@@ -167,6 +204,21 @@ textarea {
   color: #9ca3af;
 }
 
+/* FORM ELEMENTS — DARK */
+.page-admin input,
+.page-admin textarea {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #f3f4f6;
+}
+
+.page-admin input:focus,
+.page-admin textarea:focus {
+  outline: 2px solid #f97316;
+  outline-offset: 1px;
+}
+
+/* Form structure */
 .form-grid {
   display: flex;
   flex-direction: column;
@@ -177,23 +229,6 @@ textarea {
   display: block;
   margin-bottom: 0.25rem;
   font-size: 0.85rem;
-}
-
-.form-field input,
-.form-field textarea {
-  width: 100%;
-  font-size: 0.9rem;
-  padding: 0.45rem 0.5rem;
-  border-radius: 0.375rem;
-  border: 1px solid #374151;
-  background: #020617;
-  color: #f9fafb;
-}
-
-.form-field input:focus,
-.form-field textarea:focus {
-  outline: 2px solid #f97316;
-  outline-offset: 1px;
 }
 
 .form-field-inline {
@@ -213,9 +248,8 @@ textarea {
   font-size: 0.9rem;
 }
 
-.checkbox-label input {
-  width: 16px;
-  height: 16px;
+.req {
+  color: #f97316;
 }
 
 .form-actions {
@@ -225,42 +259,35 @@ textarea {
   margin-top: 0.25rem;
 }
 
-.btn-primary,
-.btn-ghost {
-  font-size: 0.9rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 0.375rem;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-
+/* Buttons in admin */
 .btn-primary {
   background: #f97316;
-  border-color: #f97316;
   color: #0b1020;
   font-weight: 600;
+  border: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
   background: #fb923c;
-  border-color: #fb923c;
 }
 
 .btn-ghost {
   background: transparent;
-  border-color: #4b5563;
+  border: 1px solid #4b5563;
   color: #e5e7eb;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
 }
 
 .btn-ghost:hover {
   background: #111827;
 }
 
-.req {
-  color: #f97316;
-  margin-left: 0.1rem;
-}
-
+/* Status messages */
 .status-message {
   margin-top: 0.75rem;
   font-size: 0.85rem;
@@ -277,27 +304,4 @@ textarea {
 
 .status-error {
   color: #f87171;
-}
-
-.status-links {
-  margin-top: 0.3rem;
-  font-size: 0.8rem;
-}
-
-.status-links a {
-  color: #fbbf24;
-}
-
-.info-card {
-  font-size: 0.85rem;
-  color: #d1d5db;
-}
-
-.info-list {
-  padding-left: 1.1rem;
-  margin: 0.25rem 0 0;
-}
-
-.info-list li + li {
-  margin-top: 0.25rem;
 }
