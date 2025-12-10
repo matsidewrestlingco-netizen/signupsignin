@@ -1,130 +1,155 @@
 import { supabase } from "./supabaseClient.js";
 
-const eventSelect = document.getElementById("report-event-select");
-const previewTable = document.getElementById("report-preview-table");
-const previewBody = document.getElementById("report-preview-body");
-const previewEmpty = document.getElementById("report-preview-empty");
-
+// ----------------------------
 // Load events into dropdown
+// ----------------------------
 async function loadEvents() {
-  const { data, error } = await supabase
+  const eventSelect = document.getElementById("eventSelect");
+
+  const { data: events, error } = await supabase
     .from("events")
-    .select("id, title, start_time")
+    .select("*")
     .order("start_time", { ascending: true });
 
   if (error) {
     console.error("Error loading events:", error);
+    eventSelect.innerHTML = `<option>Error loading events</option>`;
     return;
   }
 
-  eventSelect.innerHTML = `<option value="">Select an event...</option>`;
+  if (!events.length) {
+    eventSelect.innerHTML = `<option>No events found</option>`;
+    return;
+  }
 
-  data.forEach((ev) => {
-    const opt = document.createElement("option");
-    opt.value = ev.id;
-    opt.textContent = `${ev.title} (${new Date(ev.start_time).toLocaleDateString()})`;
-    eventSelect.appendChild(opt);
+  eventSelect.innerHTML = events
+    .map(e => `<option value="${e.id}">${e.title}</option>`)
+    .join("");
+
+  eventSelect.addEventListener("change", () => {
+    const id = eventSelect.value;
+    if (id) loadPreview(id);
   });
 }
 
-// Load preview table when dropdown changes
+// ----------------------------
+// Load signup preview
+// ----------------------------
 async function loadPreview(eventId) {
-  if (!eventId) {
-    previewTable.style.display = "none";
-    previewEmpty.style.display = "block";
-    previewEmpty.textContent = "Choose an event above to see signups.";
-    return;
-  }
+  const preview = document.getElementById("preview-container");
+  preview.textContent = "Loading signups…";
 
-  const { data, error } = await supabase
+  const { data: signups, error } = await supabase
     .from("signups")
-    .select("full_name, email, note, checked_in, checked_in_at, slots(name, category)")
+    .select("*, slots(name)")
     .eq("event_id", eventId);
 
   if (error) {
-    console.error(error);
+    console.error("Error loading preview:", error);
+    preview.textContent = "Error loading data.";
     return;
   }
 
-  previewBody.innerHTML = "";
+  if (!signups.length) {
+    preview.textContent = "No signups yet.";
+    return;
+  }
 
-  data.forEach((row) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.full_name}</td>
-      <td>${row.email}</td>
-      <td>${row.slots?.name || ""}</td>
-      <td>${row.slots?.category || ""}</td>
-      <td>${row.checked_in ? "Yes" : "No"}</td>
-      <td>${row.checked_in_at || ""}</td>
-    `;
-    previewBody.appendChild(tr);
-  });
-
-  previewEmpty.style.display = data.length ? "none" : "block";
-  previewTable.style.display = data.length ? "table" : "none";
+  preview.innerHTML = signups
+    .map(s => `
+      <div class="report-row">
+        <strong>${s.full_name}</strong>  
+        <span>${s.slots?.name || "Unknown Slot"}</span>
+        <span>${s.checked_in ? "✅ Checked In" : "❌ Not Checked In"}</span>
+      </div>
+    `)
+    .join("");
 }
 
+// ----------------------------
 // CSV Download Helper
+// ----------------------------
 function downloadCSV(filename, rows) {
-  const process = rows.map((row) =>
-    Object.values(row).map((v) => `"${v ?? ""}"`).join(",")
-  );
+  if (!rows || !rows.length) {
+    alert("No data to download.");
+    return;
+  }
 
-  const blob = new Blob([process.join("\n")], {
-    type: "text/csv;charset=utf-8;",
-  });
+  const headers = Object.keys(rows[0]).join(",");
+  const values = rows.map(r => Object.values(r).join(",")).join("\n");
+  const output = headers + "\n" + values;
 
+  const blob = new Blob([output], { type: "text/csv" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = filename;
   link.click();
 }
 
-// Download Signups
-document.getElementById("btn-download-signups").onclick = async () => {
-  const eventId = eventSelect.value;
-  if (!eventId) return alert("Select an event");
+// ----------------------------
+// Button: Download Signups
+// ----------------------------
+document.getElementById("downloadSignups").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
 
   const { data, error } = await supabase
     .from("signups")
-    .select("full_name, email, slot_id, checked_in, checked_in_at, slots(name, category)")
+    .select("full_name,email,checked_in,slots(name)")
     .eq("event_id", eventId);
 
   if (error) return console.error(error);
 
-  downloadCSV("event-signups.csv", data);
+  const formatted = data.map(s => ({
+    name: s.full_name,
+    email: s.email,
+    slot: s.slots?.name || "",
+    checked_in: s.checked_in ? "Yes" : "No",
+  }));
+
+  downloadCSV("signups.csv", formatted);
 };
 
-// Download Check-ins
-document.getElementById("btn-download-checkins").onclick = async () => {
-  const eventId = eventSelect.value;
-  if (!eventId) return alert("Select an event");
+// ----------------------------
+// Button: Download Check-ins
+// ----------------------------
+document.getElementById("downloadCheckins").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("signups")
-    .select("full_name, email, slot_id, checked_in, checked_in_at, slots(name, category)")
+    .select("full_name,email,checked_in,checked_in_at,slots(name)")
     .eq("event_id", eventId)
     .eq("checked_in", true);
 
-  if (error) return console.error(error);
+  const formatted = data.map(s => ({
+    name: s.full_name,
+    email: s.email,
+    slot: s.slots?.name || "",
+    checked_in_at: s.checked_in_at || "",
+  }));
 
-  downloadCSV("checked-in.csv", data);
+  downloadCSV("checkins.csv", formatted);
 };
 
-// Download All Signups (all events)
-document.getElementById("btn-download-all-signups").onclick = async () => {
-  const { data, error } = await supabase
+// ----------------------------
+// Button: Download All Signups (All Events)
+// ----------------------------
+document.getElementById("downloadAll").onclick = async () => {
+  const { data } = await supabase
     .from("signups")
-    .select("full_name, email, event_id, slot_id, checked_in, checked_in_at");
+    .select("full_name,email,checked_in,event_id,slots(name)");
 
-  if (error) return console.error(error);
+  const formatted = data.map(s => ({
+    event_id: s.event_id,
+    name: s.full_name,
+    email: s.email,
+    slot: s.slots?.name || "",
+    checked_in: s.checked_in ? "Yes" : "No",
+  }));
 
-  downloadCSV("all-signups.csv", data);
+  downloadCSV("all_signups.csv", formatted);
 };
 
-// Bind dropdown listener
-eventSelect.addEventListener("change", () => loadPreview(eventSelect.value));
-
-// Initialize
+// Init
 loadEvents();
