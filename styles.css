@@ -250,3 +250,11 @@ table.report-table td {
 .top-nav {
   box-sizing: border-box;
 }
+
+/* Universal Page Layout Wrapper */
+.layout {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
