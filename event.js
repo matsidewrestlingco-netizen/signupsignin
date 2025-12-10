@@ -89,34 +89,31 @@ function renderSlots(slots) {
           : ""
       }
 
-      ${
-        slot.description
-          ? `<p>${slot.description}</p>`
-          : ""
-      }
-
       <p><strong>${remaining}</strong> spots remaining</p>
 
       ${
         remaining > 0
           ? `
-          <button class="btn btn-primary signup-btn" data-slot="${slot.id}">
-            Sign Up
-          </button>
-
-          <div class="signup-form" id="form-${slot.id}" style="display:none;">
-            <input type="text" placeholder="Your name" class="input-name" />
-            <input type="email" placeholder="Your email" class="input-email" />
-            <textarea placeholder="Optional note" class="input-note"></textarea>
-
-            <button class="btn btn-primary confirm-btn" data-slot="${slot.id}">
-              Confirm
+            <button class="btn btn-primary signup-btn" data-slot="${slot.id}">
+              Sign Up
             </button>
-            <button class="btn btn-secondary cancel-btn" data-slot="${slot.id}">
-              Cancel
-            </button>
-          </div>
-        `
+
+            <div class="signup-form" id="form-${slot.id}" style="display:none;">
+
+              <div class="signup-row">
+                <input type="text" class="input-name" placeholder="Your name">
+                <input type="email" class="input-email" placeholder="Your email">
+              </div>
+
+              <textarea class="input-note" placeholder="Optional note"></textarea>
+
+              <div class="signup-buttons">
+                <button class="btn btn-primary confirm-btn" data-slot="${slot.id}">Confirm</button>
+                <button class="btn btn-secondary cancel-btn" data-slot="${slot.id}">Cancel</button>
+              </div>
+
+            </div>
+          `
           : `<p class="helper-text">This slot is full.</p>`
       }
     `;
