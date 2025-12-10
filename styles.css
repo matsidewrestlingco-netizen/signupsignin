@@ -829,3 +829,135 @@ textarea {
   color: #1f2937;
   font-weight: 700;
 }
+
+/* PAGE BACKGROUND */
+body {
+  background: #f5f6fa !important;
+  color: #1f2937;
+  font-family: system-ui, sans-serif;
+}
+
+/* HEADER BAR */
+.admin-header {
+  background: white;
+  border-bottom: 1px solid #d1d5db;
+  padding: 16px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+/* SIDEBAR */
+.admin-sidebar {
+  width: 240px;
+  background: white;
+  border-right: 1px solid #d1d5db;
+  padding: 20px;
+}
+
+.admin-sidebar a {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.admin-sidebar a:hover {
+  background: #f1f5f9;
+}
+
+.admin-sidebar a.active {
+  background: #1e40af;
+  color: white;
+}
+
+/* MAIN CONTENT */
+.admin-content {
+  padding: 32px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* TABLE IMPROVEMENTS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  background: #f8fafc;
+  padding: 12px;
+  text-align: left;
+  font-weight: 700;
+  color: #1f2937;
+  border-bottom: 1px solid #d1d5db;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover {
+  background: #f1f5f9;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #1e40af;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #3b82f6;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #1f2937;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #d1d5db;
+}
+
+.btn-delete {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+/* FORMS */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  background: white;
+}
