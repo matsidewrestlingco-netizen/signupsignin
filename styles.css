@@ -233,3 +233,57 @@ form textarea {
 .hidden {
   display: none;
 }
+
+/* Slot signup form wrapper */
+.signup-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Row for name + email */
+.signup-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Inputs */
+.signup-form input,
+.signup-form textarea {
+  padding: 10px;
+  border: 1px solid #d0d3db;
+  border-radius: 8px;
+  font-size: 14px;
+  flex: 1;
+}
+
+/* Note textarea full width */
+.signup-form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Button row */
+.signup-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.signup-buttons .btn {
+  min-width: 110px;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #243c7c;
+  color: #fff;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #e2e2e2;
+  color: #000;
+  border: none;
+}
