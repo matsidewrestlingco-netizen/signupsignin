@@ -31,6 +31,62 @@ body {
 .app-main::before {
   content: none !important;
 }
+
+/* --- FIXED HEADER STYLING --- */
+
+/* Restore header bar */
+.app-header {
+  background-color: #1f3c88;
+  color: white;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 20;
+}
+
+/* Restore logo size */
+.brand-logo {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Restore header left section */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Title next to logo */
+.header-title {
+  font-weight: 700;
+  font-size: 1.4rem;
+  white-space: nowrap;
+}
+
+/* Navigation links */
+.app-nav a {
+  color: white;
+  margin-left: 24px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.app-nav a:hover {
+  opacity: 0.7;
+}
+
+/* Ensure no background watermark ever leaks into header */
+.app-header::before {
+  content: none !important;
+}
+
 /* -------------------
    COLOR VARIABLES
 ------------------- */
