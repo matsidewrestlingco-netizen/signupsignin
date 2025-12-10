@@ -1,97 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Edit Event – Matside Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>signUPsignIN – Edit Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body class="page-admin">
-
-  <!-- HEADER -->
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <div class="brand">
-        <img src="assetWHITE.svg" class="site-logo" />
-        <span class="site-title">Edit Event</span>
+  <body>
+    <!-- UNIFIED HEADER -->
+    <header class="header-bar">
+      <div class="header-left">
+        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+        <div class="header-title">Edit Event</div>
       </div>
 
-      <nav class="top-nav">
-        <a href="index.html">Public</a>
+      <nav class="nav-links">
+        <a href="index.html">Public Events</a>
         <a href="admin-events.html">Manage Events</a>
-        <a class="active">Edit Event</a>
+        <a href="admin.html">Create Event</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="main-wrap">
+    <!-- MAIN CONTENT -->
+    <main class="page-container">
 
-    <!-- EVENT DETAILS -->
-    <section class="card">
-      <h1 class="card-title">Edit Event</h1>
-      <p class="card-subtitle">Modify event details and update available slots.</p>
+      <section class="section-title">
+        <h1>Edit Event</h1>
+        <p>Modify event details or manage volunteer/donation slots.</p>
+      </section>
 
-      <div class="form-grid">
+      <!-- EVENT DETAILS FORM -->
+      <article class="card" id="eventFormCard">
+        <h2>Event Information</h2>
 
-        <div class="form-field">
-          <label for="title">Event Name</label>
-          <input id="title" type="text" />
-        </div>
+        <form id="editEventForm">
+          <label>Event Title</label>
+          <input type="text" id="event-title" required />
 
-        <div class="form-field">
-          <label for="location">Location</label>
-          <input id="location" type="text" />
-        </div>
+          <label>Date & Time</label>
+          <input type="datetime-local" id="event-start" required />
 
-        <div class="form-field">
-          <label for="date">Date</label>
-          <input id="date" type="date" />
-        </div>
+          <label>Location</label>
+          <input type="text" id="event-location" />
 
-        <div class="form-field">
-          <label for="start_time">Start Time</label>
-          <input id="start_time" type="time" />
-        </div>
+          <label>Description</label>
+          <textarea id="event-description"></textarea>
 
-        <div class="form-field">
-          <label for="end_time">End Time</label>
-          <input id="end_time" type="time" />
-        </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+            Save Event
+          </button>
 
-        <div class="form-field full-width">
-          <label for="description">Description</label>
-          <textarea id="description" rows="3"></textarea>
-        </div>
+          <p id="eventFormMessage" class="helper-text" style="display:none; margin-top:10px;"></p>
+        </form>
+      </article>
 
-      </div>
+      <!-- SLOT CREATION FORM -->
+      <article class="card" id="newSlotCard">
+        <h2>Add New Slot</h2>
 
-      <button id="save-event-btn" class="btn-primary" style="margin-top: 12px;">
-        Save Event
-      </button>
-    </section>
+        <form id="newSlotForm">
+          <label>Slot Name</label>
+          <input type="text" id="slot-name" required />
 
-    <!-- SLOT MANAGEMENT -->
-    <section class="card">
-      <h2 class="card-title-sm">Slots</h2>
-
-      <div id="existing-slots">
-        <!-- JS loads existing slots here -->
-      </div>
-
-      <hr style="border-color:#1f2937; margin: 1.5rem 0;">
-
-      <h3>Add New Slot</h3>
-
-      <div class="form-grid">
-
-        <div class="form-field">
-          <label for="slot-name">Slot Name</label>
-          <input id="slot-name" />
-        </div>
-
-        <div class="form-field">
-          <label for="slot-category">Category</label>
+          <label>Category</label>
           <select id="slot-category">
             <option value="volunteer">Volunteers</option>
             <option value="food">Food Donations</option>
@@ -100,38 +72,36 @@
             <option value="matcrew">Mat Crew</option>
             <option value="other">Other</option>
           </select>
-        </div>
 
-        <div class="form-field">
-          <label for="slot-start">Start Time</label>
-          <input id="slot-start" type="time" />
-        </div>
+          <label>Total Quantity</label>
+          <input type="number" id="slot-quantity" required min="1" />
 
-        <div class="form-field">
-          <label for="slot-end">End Time</label>
-          <input id="slot-end" type="time" />
-        </div>
+          <label>Start Time</label>
+          <input type="time" id="slot-start" />
 
-        <div class="form-field">
-          <label for="slot-qty">Quantity</label>
-          <input id="slot-qty" type="number" min="1" value="1" />
-        </div>
+          <label>End Time</label>
+          <input type="time" id="slot-end" />
 
-        <div class="form-field full-width">
-          <label for="slot-description">Description</label>
-          <textarea id="slot-description" rows="2"></textarea>
-        </div>
+          <label>Optional Notes</label>
+          <textarea id="slot-description"></textarea>
 
-      </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">
+            Add Slot
+          </button>
 
-      <button id="add-slot-btn" class="btn-primary" style="margin-top: 12px;">
-        Add Slot
-      </button>
+          <p id="slotMessage" class="helper-text" style="display:none; margin-top:10px;"></p>
+        </form>
+      </article>
 
-    </section>
+      <!-- EXISTING SLOTS LIST -->
+      <section class="section-title" style="margin-top: 40px;">
+        <h2>Existing Slots</h2>
+      </section>
 
-  </main>
+      <section id="existingSlots"></section>
 
-  <script type="module" src="./admin-edit-event.js?v=4"></script>
-</body>
+    </main>
+
+    <script type="module" src="admin-edit-event.js"></script>
+  </body>
 </html>
