@@ -2,87 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Matside Admin – Reports</title>
+  <title>signUPsignIN – Reports</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body class="page-admin">
-  <!-- Admin Header -->
-<header class="top-bar">
-  <div class="top-bar-inner">
 
-    <div class="brand">
-      <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
-      <span class="site-title">Admin Reports</span>
+  <!-- ADMIN HEADER (standardized across all admin pages) -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <img src="./assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
+        <span class="site-title">Reports</span>
+      </div>
+
+      <nav class="top-nav">
+        <a href="admin.html">Create Event</a>
+        <a href="admin-events.html">Manage Events</a>
+        <a href="admin-reports.html" class="active">Reports</a>
+        <a href="index.html">Public Events</a>
+      </nav>
     </div>
+  </header>
 
-    <nav class="top-nav">
-      <a href="admin.html">Create Event</a>
-      <a href="admin-events.html">Manage Events</a>
-      <a href="admin-reports.html" class="active">Reports</a>
-      <a href="index.html">Public Events</a>
-    </nav>
+  <!-- PAGE WRAPPER -->
+  <main class="content-container">
 
-  </div>
-</header>
+    <section class="card">
+      <h2>Reports</h2>
+      <p>Export signups and check-in data for your events.</p>
 
-  <!-- Main content -->
-  <main class="dashboard-main">
+      <label for="eventSelect"><strong>Select event</strong></label>
+      <select id="eventSelect">
+        <option>Loading events…</option>
+      </select>
 
-    <section class="dashboard-header">
-      <h1>Reports</h1>
-      <p class="dashboard-subtitle">
-        Export signups and check-in data for your events.
-      </p>
-    </section>
-
-    <!-- Filters and actions -->
-    <section class="dashboard-filters">
-      <div>
-        <label for="report-event-select" class="field-label">
-          Select event
-        </label>
-        <select id="report-event-select" class="input">
-          <option value="">Loading events…</option>
-        </select>
-      </div>
-
-      <div class="report-buttons">
-        <button id="btn-download-signups" class="btn btn-primary">
-          Download Signups CSV
-        </button>
-        <button id="btn-download-checkins" class="btn btn-secondary">
-          Download Check-in CSV
-        </button>
-        <button id="btn-download-all-signups" class="btn">
-          Download ALL Signups
-        </button>
+      <div class="button-row">
+        <button id="downloadSignups">Download Signups CSV</button>
+        <button id="downloadCheckins">Download Check-in CSV</button>
+        <button id="downloadAll">Download ALL Signups</button>
       </div>
     </section>
 
-    <!-- Preview table -->
     <section class="card">
       <h2>Preview</h2>
-      <p id="report-preview-empty" class="helper-text">
-        Choose an event above to see signups.
-      </p>
-
-      <div class="table-wrapper">
-        <table id="report-preview-table" class="report-table" style="width: 100%; border-collapse: collapse; display: none;">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Slot</th>
-              <th>Category</th>
-              <th>Checked In</th>
-              <th>Checked In At</th>
-            </tr>
-          </thead>
-          <tbody id="report-preview-body"></tbody>
-        </table>
-      </div>
+      <div id="preview-container">Choose an event above to see signups.</div>
     </section>
 
   </main>
