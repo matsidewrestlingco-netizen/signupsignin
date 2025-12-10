@@ -332,3 +332,152 @@ table.report-table td {
   max-width: 100%;
   box-sizing: border-box;
 }
+
+/* ===========================
+   SPLASH PAGE STYLES
+=========================== */
+
+.page-splash {
+  background: #f5f6fa;
+  font-family: Arial, sans-serif;
+  color: #0d2448;
+  text-align: center;
+}
+
+/* HEADER */
+.splash-header {
+  padding: 20px 0;
+}
+
+.splash-logo {
+  width: 140px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* HERO */
+.hero {
+  padding: 60px 20px 40px;
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 700;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.hero-subtitle {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  color: #33415c;
+  font-size: 18px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #2547a9;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1e3d8a;
+}
+
+.btn-secondary {
+  background: white;
+  color: #2547a9;
+  border: 2px solid #2547a9;
+}
+
+.btn-secondary:hover {
+  background: #e8eefc;
+}
+
+/* FEATURES */
+.features {
+  padding: 50px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 280px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+.feature h3 {
+  margin-top: 0;
+  color: #1b2f58;
+}
+
+/* HOW IT WORKS */
+.how {
+  padding: 50px 20px;
+  background: white;
+}
+
+.how h2 {
+  margin-bottom: 20px;
+}
+
+.how-steps {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.step {
+  width: 220px;
+}
+
+.step-number {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  background: #2547a9;
+  color: white;
+  border-radius: 50%;
+  line-height: 36px;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* CTA */
+.cta {
+  padding: 60px 20px;
+}
+
+.cta h2 {
+  margin-bottom: 20px;
+}
+
+/* FOOTER */
+.splash-footer {
+  padding: 20px;
+  margin-top: 40px;
+  background: #f0f2f6;
+  color: #33415c;
+}
