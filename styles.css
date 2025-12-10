@@ -1,151 +1,45 @@
-/* -------------------------------------------------------
-   signUPsignIN — Unified Global Styles
-   Clean, consistent design across public + admin pages
-   Light theme + blue accents
-------------------------------------------------------- */
-/* EMERGENCY FIX — override broken rules */
+/* ---------------------------------------------------------
+   GLOBAL THEME — SIGNUPSIGNIN LIGHT MODE
+   --------------------------------------------------------- */
 
-/* Force header back to blue */
-.app-header {
-  background: #1f3c88 !important;
-  position: relative;
-  z-index: 10;
-}
-
-/* Prevent any background images from leaking into body */
-body {
-  background-image: none !important;
-  background-size: initial !important;
-  background-repeat: no-repeat !important;
-}
-
-/* Ensure the logo stays small */
-.brand-logo {
-  width: 42px !important;
-  height: auto !important;
-  object-fit: contain !important;
-}
-
-/* Kill any huge background watermark image that may have been injected */
-.app-shell::before,
-.app-main::before {
-  content: none !important;
-}
-
-/* --- FIXED HEADER STYLING --- */
-
-/* Restore header bar */
-.app-header {
-  background-color: #1f3c88;
-  color: white;
-  padding: 16px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  position: relative;
-  z-index: 20;
-}
-
-/* Restore logo size */
-.brand-logo {
-  height: 64px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-}
-
-/* Restore header left section */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Title next to logo */
-.header-title {
-  font-weight: 700;
-  font-size: 1.4rem;
-  white-space: nowrap;
-}
-
-/* Navigation links */
-.app-nav a {
-  color: white;
-  margin-left: 24px;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.app-nav a:hover {
-  opacity: 0.7;
-}
-
-/* Ensure no background watermark ever leaks into header */
-.app-header::before {
-  content: none !important;
-}
-
-/* -------------------
-   COLOR VARIABLES
-------------------- */
 :root {
-  --blue-primary: #243c8f;         /* Matside brand blue */
-  --blue-light: #3f5cd8;
-  --blue-faint: #eaf0ff;
-
-  --gray-100: #f5f6fa;
-  --gray-200: #e6e8ee;
-  --gray-300: #d1d5db;
-  --gray-600: #4b5563;
-  --gray-800: #1f2937;
-
-  --text-main: #1b1b1b;
-  --text-muted: #4f586a;
-
-  --white: #ffffff;
+  --brand-blue: #243c7b;
+  --brand-blue-light: #3150a5;
+  --brand-gray-light: #f5f6fa;
+  --brand-gray-mid: #e6e8ef;
+  --brand-text-dark: #1a1a1a;
+  --brand-text-muted: #555;
+  --card-bg: #ffffff;
+  --card-border: #d9d9d9;
 }
 
-/* -------------------
-   GLOBAL RESET
-------------------- */
-body {
+/* ---------------------------------------------------------
+   BASE RESET
+   --------------------------------------------------------- */
+
+* {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-  background-color: var(--gray-100);
-  color: var(--text-main);
-  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
 
-h1, h2, h3, h4 {
-  margin: 0;
-  font-weight: 600;
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    sans-serif;
+  background: var(--brand-gray-light);
+  color: var(--brand-text-dark);
+  line-height: 1.4;
 }
 
-p {
-  margin: 0;
-  color: var(--text-muted);
-}
+/* ---------------------------------------------------------
+   HEADER BAR (Public + Admin)
+   --------------------------------------------------------- */
 
-a {
-  text-decoration: none;
-  color: var(--blue-primary);
-}
-
-button {
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* -------------------
-   HEADER BAR
-------------------- */
 .header-bar {
-  background: var(--blue-primary);
-  padding: 1rem 2rem;
-  color: var(--white);
+  width: 100%;
+  background: var(--brand-blue);
+  color: white;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -154,181 +48,188 @@ button {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 12px;
 }
 
-.header-left img {
-  height: 40px;
+.brand-logo {
+  height: 46px;             /* THIS FIXES YOUR TINY LOGO ISSUE */
+  width: auto;
+}
+
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .nav-links {
   display: flex;
+  gap: 20px;
   align-items: center;
-  gap: 1.5rem;
 }
 
 .nav-links a {
-  color: var(--white);
-  font-weight: 500;
-  opacity: 0.85;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  opacity: 0.9;
 }
+
 .nav-links a:hover {
   opacity: 1;
+  text-decoration: underline;
 }
 
-/* -------------------
-   PAGE CONTAINER
-------------------- */
-.container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+/* ---------------------------------------------------------
+   PAGE LAYOUT CONTAINERS
+   --------------------------------------------------------- */
+
+.page-container {
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 0 20px;
 }
 
-/* -------------------
-   CARD COMPONENT
-------------------- */
-.card {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
-
-.card-title {
-  font-size: 1.25rem;
+.section-title {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
 }
 
-/* -------------------
-   FORM ELEMENTS
-------------------- */
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 0.65rem;
-  border: 1px solid var(--gray-300);
-  border-radius: 8px;
-  font-size: 1rem;
-  margin-top: 0.35rem;
-  box-sizing: border-box;
+/* ---------------------------------------------------------
+   CARDS
+   --------------------------------------------------------- */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-textarea {
-  resize: vertical;
-  min-height: 80px;
+.card h2,
+.card h3 {
+  margin-bottom: 10px;
 }
 
-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-main);
+/* Fix white-on-white issue for "New Slot" or admin cards */
+.card.admin-card {
+  background: #ffffff;
+  border: 1px solid #cdd3df;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
+.card:hover {
+  background: #fafbff;
 }
 
-.form-col {
-  flex: 1;
-}
-
-/* -------------------
+/* ---------------------------------------------------------
    BUTTONS
-------------------- */
+   --------------------------------------------------------- */
+
 .btn {
   display: inline-block;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   font-weight: 600;
+  cursor: pointer;
   text-align: center;
   border: none;
 }
 
-/* Primary */
 .btn-primary {
-  background: var(--blue-primary);
-  color: var(--white);
-}
-.btn-primary:hover {
-  background: var(--blue-light);
-}
-
-/* Secondary */
-.btn-secondary {
-  background: var(--gray-200);
-  color: var(--text-main);
-}
-.btn-secondary:hover {
-  background: var(--gray-300);
-}
-
-/* Danger */
-.btn-danger {
-  background: #c62828;
+  background: var(--brand-blue);
   color: white;
 }
-.btn-danger:hover {
-  background: #a71f1f;
+
+.btn-primary:hover {
+  background: var(--brand-blue-light);
 }
 
-/* -------------------
-   LISTS (Events, Slots)
-------------------- */
-.list-card {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.btn-secondary {
+  background: #ddd;
 }
 
-.list-card h3 {
-  margin-bottom: 0.4rem;
+.btn-secondary:hover {
+  background: #ccc;
 }
 
-.list-card small {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
+/* ---------------------------------------------------------
+   FORMS
+   --------------------------------------------------------- */
 
-/* -------------------
-   SLOT GROUP HEADERS
-------------------- */
-.slot-group-title {
-  font-size: 1.1rem;
+form label {
   font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
 }
 
-/* -------------------
-   CHECK-IN BADGE
-------------------- */
-.badge {
-  padding: 3px 8px;
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cdd3df;
   border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-block;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+  background: white;
 }
 
-.badge-success {
-  background: #e1f5e4;
-  color: #166534;
+form textarea {
+  resize: vertical;
 }
 
-.badge-warning {
-  background: #fff4d6;
-  color: #92400e;
+/* ---------------------------------------------------------
+   EVENT CARDS ON INDEX + ADMIN EVENTS
+   --------------------------------------------------------- */
+
+.event-card {
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  margin-bottom: 20px;
+  transition: background 0.2s ease;
 }
 
-.badge-info {
-  background: var(--blue-faint);
-  color: var(--blue-primary);
+.event-card:hover {
+  background: #f3f6ff;
+}
+
+/* ---------------------------------------------------------
+   TABLES (Check-in, slot lists)
+   --------------------------------------------------------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.table th {
+  background: var(--brand-blue);
+  color: white;
+}
+
+/* ---------------------------------------------------------
+   SPACING HELPERS
+   --------------------------------------------------------- */
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.hidden {
+  display: none;
 }
