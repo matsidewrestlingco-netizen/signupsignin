@@ -4,11 +4,41 @@
   <meta charset="UTF-8" />
   <title>signUPsignIN – Create Event</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- Page-specific layout fixes so the card doesn’t get cut off -->
+  <style>
+    /* Center the admin content and keep it off the edges */
+    main.admin-main {
+      max-width: 960px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+      box-sizing: border-box;
+    }
+
+    /* Nice, consistent card styling just for this page */
+    main.admin-main .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      padding: 24px 28px 28px;
+      box-sizing: border-box;
+    }
+
+    main.admin-main .card h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    main.admin-main .card p.lead {
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #4b5563;
+    }
+  </style>
 </head>
 
-<body>
-
+<body class="page-admin">
   <!-- STANDARD ADMIN HEADER -->
   <header class="top-bar">
     <div class="top-bar-inner">
@@ -26,42 +56,54 @@
     </div>
   </header>
 
-  <!-- FIXED: only ONE page-container wrapper -->
-  <main class="page-container">
-
-    <section class="section-title">
+  <main class="admin-main">
+    <section class="card">
       <h1>Create New Event</h1>
-      <p>Use this form to create a new event for parents to sign up for.</p>
-    </section>
+      <p class="lead">
+        Use this form to create a new event for parents to sign up for.
+      </p>
 
-    <!-- Card now centers correctly without clipping -->
-    <article class="card" style="max-width: 640px;">
       <form id="createEventForm">
-        <label for="event-title">Event Title</label>
-        <input type="text" id="event-title" required />
+        <div class="form-group">
+          <label for="title">Event Title</label>
+          <input id="title" name="title" type="text" required />
+        </div>
 
-        <label for="event-start">Date &amp; Start Time</label>
-        <input type="datetime-local" id="event-start" required />
+        <div class="form-group">
+          <label for="start_time">Date &amp; Start Time</label>
+          <input
+            id="start_time"
+            name="start_time"
+            type="datetime-local"
+            required
+          />
+        </div>
 
-        <label for="event-location">Location</label>
-        <input type="text" id="event-location" />
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input id="location" name="location" type="text" />
+        </div>
 
-        <label for="event-description">Description</label>
-        <textarea id="event-description"></textarea>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3"></textarea>
+        </div>
 
-        <label class="checkbox-row">
-          <input type="checkbox" id="event-public" checked />
-          <span>Show this event on the public events page</span>
-        </label>
+        <div class="form-group form-group-inline">
+          <label for="is_public">
+            <input
+              id="is_public"
+              name="is_public"
+              type="checkbox"
+              checked
+            />
+            Show this event on the public events page
+          </label>
+        </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
-          Create Event
-        </button>
-
-        <p id="createEventMessage" class="helper-text" style="margin-top: 10px;"></p>
+        <button type="submit" class="btn primary">Create Event</button>
       </form>
-    </article>
-
+    </section>
   </main>
 
   <script type="module" src="admin.js"></script>
