@@ -24,7 +24,7 @@ searchBtn.addEventListener("click", async () => {
   let query = supabase
     .from("signups")
     .select(`id, full_name, email, checked_in, checked_in_at, slot:slots(name,event_id,start_time,end_time)`)
-    .eq("email", email);
+    .ilike("email", email.trim());
 
   if (eventId) {
     // restrict to a specific event
