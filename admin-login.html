@@ -2,39 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login – signUPsignIN</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <title>signUPsignIN – Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body class="page-admin-login">
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <div class="brand">
-        <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
-        <span class="site-title">Admin Login</span>
-      </div>
+<body>
+
+  <!-- UNIFIED BLUE HEADER -->
+  <header class="header-bar">
+    <div class="header-left">
+      <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+      <div class="header-title">Admin Login</div>
     </div>
+
+    <nav class="nav-links">
+      <a href="index.html">Public Events</a>
+      <a href="admin-events.html">Manage Events</a>
+    </nav>
   </header>
 
-  <main class="centered-card-container">
-    <div class="card login-card">
-      <h2>Admin Login</h2>
-      <p>Please enter the admin password to continue.</p>
+  <!-- MAIN CONTENT -->
+  <main class="page-container">
 
-      <input 
-        id="admin-password" 
-        type="password" 
-        placeholder="Enter admin password"
-        class="input"
-      />
+    <section class="section-title">
+      <h1>Administrator Access</h1>
+      <p>Please enter your password to access event management tools.</p>
+    </section>
 
-      <button id="login-button" class="btn btn-primary">Login</button>
+    <article class="card" style="max-width: 420px; margin: 0 auto;">
 
-      <p id="login-error" class="error-message" style="display:none;">
-        Incorrect password. Please try again.
-      </p>
-    </div>
+      <form id="admin-login-form">
+
+        <label for="admin-password">Admin Password</label>
+        <input type="password" id="admin-password" required />
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 16px; width: 100%;">
+          Log In
+        </button>
+
+        <p id="login-error" class="helper-text" style="display:none; margin-top: 10px;"></p>
+
+      </form>
+    </article>
+
   </main>
 
   <script type="module" src="admin-login.js"></script>
