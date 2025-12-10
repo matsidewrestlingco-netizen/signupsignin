@@ -1,3 +1,19 @@
+import { requireAdmin, logoutAdmin } from "./auth.js";
+
+// Require login
+requireAdmin();
+
+// Enable log out
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutAdmin();
+    });
+  }
+});
+
 // CHANGE THIS TO YOUR REAL ADMIN PASSWORD:
 export const ADMIN_PASSWORD = "SAWATitans2026!";
 
