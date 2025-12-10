@@ -8,27 +8,25 @@
   </head>
 
   <body>
-    <!-- UNIFIED HEADER -->
+    <!-- Full-width admin header -->
     <header class="header-bar">
       <div class="header-left">
         <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-        <div class="header-title">Edit Event</div>
+        <div class="header-title">Admin – Edit Event</div>
       </div>
 
       <nav class="nav-links">
-        <a href="index.html">Public Events</a>
         <a href="admin-events.html">Manage Events</a>
         <a href="admin.html">Create Event</a>
+        <a href="index.html">Public View</a>
         <a href="#" id="logout-link">Log Out</a>
       </nav>
     </header>
 
-    <!-- MAIN CONTENT -->
     <main class="page-container">
-
       <section class="section-title">
         <h1>Edit Event</h1>
-        <p>Modify event details or manage volunteer/donation slots.</p>
+        <p>Modify event details and manage slots for this event.</p>
       </section>
 
       <!-- EVENT DETAILS FORM -->
@@ -39,7 +37,7 @@
           <label>Event Title</label>
           <input type="text" id="event-title" required />
 
-          <label>Date & Time</label>
+          <label>Date &amp; Time</label>
           <input type="datetime-local" id="event-start" required />
 
           <label>Location</label>
@@ -47,6 +45,11 @@
 
           <label>Description</label>
           <textarea id="event-description"></textarea>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="event-public" />
+            <span>Show this event on the public events page</span>
+          </label>
 
           <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
             Save Event
@@ -100,7 +103,6 @@
       </section>
 
       <section id="existingSlots"></section>
-
     </main>
 
     <script type="module" src="admin-edit-event.js"></script>
