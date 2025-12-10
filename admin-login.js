@@ -1,12 +1,16 @@
-const ADMIN_PASSWORD = "SAWATitans2026!"; // update when needed
+const ADMIN_PASSWORD = "SAWATitans2026!";
 
-document.getElementById("login-button").addEventListener("click", () => {
+document.getElementById("admin-login-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+
   const input = document.getElementById("admin-password").value.trim();
+  const errorEl = document.getElementById("login-error");
 
   if (input === ADMIN_PASSWORD) {
-    localStorage.setItem("admin-auth", "true");
-    window.location.href = "admin.html";
+    localStorage.setItem("matside_admin", "true");
+    window.location.href = "admin-events.html";
   } else {
-    document.getElementById("login-error").style.display = "block";
+    errorEl.textContent = "Incorrect password.";
+    errorEl.style.display = "block";
   }
 });
