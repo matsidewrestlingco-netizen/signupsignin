@@ -21,6 +21,13 @@ input, select, textarea {
   font-size: 1rem;
 }
 
+/* Standard layout wrapper for all pages */
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
 /* ---------------------------------------------------------
    TOP BAR — (STANDARDIZED ACROSS ALL ADMIN PAGES)
    — Matches admin-events.html exactly
