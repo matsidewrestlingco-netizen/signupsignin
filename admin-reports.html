@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Matside Admin – Reports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
 
+<body class="page-admin">
+  <!-- Admin Header -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
+        <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" /> <br>
+        <span class="site-title">Admin Reports</span>
+      </div>
+
+      <nav class="top-nav">
+        <a href="admin.html">Create Event</a>
+        <a href="admin-events.html">Manage Events</a>
+        <a href="admin-reports.html" class="active">Reports</a>
+        <a href="index.html">Public Events</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <!-- Header -->
+    <section class="dashboard-header">
+      <h1>Reports</h1>
+      <p class="dashboard-subtitle">
+        Export signups and check-in data for your events.
+      </p>
+    </section>
+
+    <!-- Controls -->
+    <section class="dashboard-filters">
+      <div>
+        <label for="report-event-select" class="field-label">
+          Select event
+        </label>
+        <select id="report-event-select" class="input">
+          <option value="">Loading events…</option>
+        </select>
+      </div>
+
+      <div class="report-buttons">
+        <button id="btn-download-signups" class="btn btn-primary">
+          Download Signups CSV
+        </button>
+        <button id="btn-download-checkins" class="btn btn-secondary">
+          Download Check-in CSV
+        </button>
+        <button id="btn-download-all-signups" class="btn">
+          Download ALL Signups
+        </button>
+      </div>
+    </section>
+
+    <!-- Preview Card -->
+    <section class="card">
+      <h2>Preview</h2>
+      <p id="report-preview-empty" class="helper-text">
+        Choose an event above to see signups.
+      </p>
+
+      <div class="table-wrapper">
+        <table id="report-preview-table" class="report-table" style="width: 100%; border-collapse: collapse; display: none;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Name</th>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Email</th>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Slot</th>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Category</th>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Checked In</th>
+              <th style="text-align:left; padding: 8px; border-bottom: 1px solid #374151;">Checked In At</th>
+            </tr>
+          </thead>
+          <tbody id="report-preview-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./admin-reports.js"></script>
+</body>
+</html>
