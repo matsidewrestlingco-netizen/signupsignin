@@ -308,3 +308,20 @@ table.report-table td {
   margin: 0 auto;
   padding: 32px 24px;
 }
+
+/* ==== FIX: Admin Create Event layout ==== */
+
+/* Make the main content a centered column with proper padding */
+.page-admin main.page-container {
+  max-width: 960px;        /* nice readable width */
+  margin: 32px auto 48px;  /* center horizontally, spacing top/bottom */
+  padding: 0 24px;         /* breathing room left/right */
+  box-sizing: border-box;
+}
+
+/* Make sure the card can never overflow to the right */
+.page-admin .card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
