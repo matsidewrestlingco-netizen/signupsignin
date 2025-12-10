@@ -1,33 +1,13 @@
 // admin-edit-event.js
-// =========================================================
-// Full file: admin authentication, load event, update event,
-// create slots, load slots.
-// =========================================================
+// Full file: auth, load event, update event, add slots, load slots
 
 import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
 
-// ---------------------------------------------------------
 // Enforce admin login
-// ---------------------------------------------------------
 requireAdmin();
 
-// ---------------------------------------------------------
-// Logout button
-// ---------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutLink = document.getElementById("logout-link");
-  if (logoutLink) {
-    logoutLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      logoutAdmin();
-    });
-  }
-});
-
-// ---------------------------------------------------------
 // Parse event ID from URL
-// ---------------------------------------------------------
 const url = new URL(window.location.href);
 const eventId = url.searchParams.get("id");
 
@@ -36,38 +16,65 @@ if (!eventId) {
   window.location.href = "admin-events.html";
 }
 
-// ---------------------------------------------------------
-// DOM ELEMENTS
-// ---------------------------------------------------------
-const eventTitleInput = document.getElementById("event-title");
-const eventStartInput = document.getElementById("event-start");
-const eventLocationInput = document.getElementById("event-location");
-const eventDescriptionInput = document.getElementById("event-description");
-const eventPublicInput = document.getElementById("event-public");
-const eventForm = document.getElementById("editEventForm");
-const eventFormMessage = document.getElementById("eventFormMessage");
+// DOM references (assigned after DOMContentLoaded)
+let eventTitleInput;
+let eventStartInput;
+let eventLocationInput;
+let eventDescriptionInput;
+let eventPublicInput;
+let eventForm;
+let eventFormMessage;
 
-const slotNameInput = document.getElementById("slot-name");
-const slotCategoryInput = document.getElementById("slot-category");
-const slotQuantityInput = document.getElementById("slot-quantity");
-const slotStartInput = document.getElementById("slot-start");
-const slotEndInput = document.getElementById("slot-end");
-const slotDescriptionInput = document.getElementById("slot-description");
-const slotForm = document.getElementById("newSlotForm");
-const slotMessage = document.getElementById("slotMessage");
+let slotNameInput;
+let slotCategoryInput;
+let slotQuantityInput;
+let slotStartInput;
+let slotEndInput;
+let slotDescriptionInput;
+let slotForm;
+let slotMessage;
 
-const existingSlotsContainer = document.getElementById("existingSlots");
+let existingSlotsContainer;
 
-// ---------------------------------------------------------
-// Load event on page load
-// ---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
+  // Wire logout
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutAdmin();
+    });
+  }
+
+  // Grab DOM elements
+  eventTitleInput = document.getElementById("event-title");
+  eventStartInput = document.getElementById("event-start");
+  eventLocationInput = document.getElementById("event-location");
+  eventDescriptionInput = document.getElementById("event-description");
+  eventPublicInput = document.getElementById("event-public");
+  eventForm = document.getElementById("editEventForm");
+  eventFormMessage = document.getElementById("eventFormMessage");
+
+  slotNameInput = document.getElementById("slot-name");
+  slotCategoryInput = document.getElementById("slot-category");
+  slotQuantityInput = document.getElementById("slot-quantity");
+  slotStartInput = document.getElementById("slot-start");
+  slotEndInput = document.getElementById("slot-end");
+  slotDescriptionInput = document.getElementById("slot-description");
+  slotForm = document.getElementById("newSlotForm");
+  slotMessage = document.getElementById("slotMessage");
+
+  existingSlotsContainer = document.getElementById("existingSlots");
+
+  // Wire form handlers
+  eventForm.addEventListener("submit", handleEventUpdate);
+  slotForm.addEventListener("submit", handleSlotCreate);
+
+  // Load data
   loadEventDetails();
 });
 
-// ---------------------------------------------------------
-// Fetch event by ID and populate form fields
-// ---------------------------------------------------------
+// -------------------- Load Event --------------------
 async function loadEventDetails() {
   const { data, error } = await supabase
     .from("events")
@@ -82,7 +89,6 @@ async function loadEventDetails() {
     return;
   }
 
-  // Populate form with values
   eventTitleInput.value = data.title || "";
   eventStartInput.value = data.start_time
     ? data.start_time.substring(0, 16)
@@ -91,14 +97,11 @@ async function loadEventDetails() {
   eventDescriptionInput.value = data.description || "";
   eventPublicInput.checked = data.is_public === true;
 
-  // Load slots AFTER event loads
   loadSlots();
 }
 
-// ---------------------------------------------------------
-// Update event details
-// ---------------------------------------------------------
-eventForm.addEventListener("submit", async (e) => {
+// -------------------- Update Event --------------------
+async function handleEventUpdate(e) {
   e.preventDefault();
   eventFormMessage.style.display = "none";
 
@@ -124,12 +127,10 @@ eventForm.addEventListener("submit", async (e) => {
 
   eventFormMessage.textContent = "Event updated successfully!";
   eventFormMessage.style.display = "block";
-});
+}
 
-// ---------------------------------------------------------
-// Add new slot
-// ---------------------------------------------------------
-slotForm.addEventListener("submit", async (e) => {
+// -------------------- Create Slot --------------------
+async function handleSlotCreate(e) {
   e.preventDefault();
   slotMessage.style.display = "none";
 
@@ -155,20 +156,16 @@ slotForm.addEventListener("submit", async (e) => {
   slotMessage.textContent = "Slot added successfully!";
   slotMessage.style.display = "block";
 
-  // Clear form fields
   slotNameInput.value = "";
   slotQuantityInput.value = "";
   slotStartInput.value = "";
   slotEndInput.value = "";
   slotDescriptionInput.value = "";
 
-  // Reload slots list
   loadSlots();
-});
+}
 
-// ---------------------------------------------------------
-// Load all slots for this event
-// ---------------------------------------------------------
+// -------------------- Load Slots --------------------
 async function loadSlots() {
   existingSlotsContainer.innerHTML = "<p>Loading slots…</p>";
 
