@@ -1,110 +1,216 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>signUPsignIN – Edit Event</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+// admin-edit-event.js
+// =========================================================
+// Full file: admin authentication, load event, update event,
+// create slots, load slots.
+// =========================================================
 
-  <body>
-    <!-- Full-width admin header -->
-    <header class="header-bar">
-      <div class="header-left">
-        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-        <div class="header-title">Admin – Edit Event</div>
-      </div>
+import { supabase } from "./supabaseClient.js";
+import { requireAdmin, logoutAdmin } from "./auth.js";
 
-      <nav class="nav-links">
-        <a href="admin-events.html">Manage Events</a>
-        <a href="admin.html">Create Event</a>
-        <a href="index.html">Public View</a>
-        <a href="#" id="logout-link">Log Out</a>
-      </nav>
-    </header>
+// ---------------------------------------------------------
+// Enforce admin login
+// ---------------------------------------------------------
+requireAdmin();
 
-    <main class="page-container">
-      <section class="section-title">
-        <h1>Edit Event</h1>
-        <p>Modify event details and manage slots for this event.</p>
-      </section>
+// ---------------------------------------------------------
+// Logout button
+// ---------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutAdmin();
+    });
+  }
+});
 
-      <!-- EVENT DETAILS FORM -->
-      <article class="card" id="eventFormCard">
-        <h2>Event Information</h2>
+// ---------------------------------------------------------
+// Parse event ID from URL
+// ---------------------------------------------------------
+const url = new URL(window.location.href);
+const eventId = url.searchParams.get("id");
 
-        <form id="editEventForm">
-          <label>Event Title</label>
-          <input type="text" id="event-title" required />
+if (!eventId) {
+  alert("Missing event ID.");
+  window.location.href = "admin-events.html";
+}
 
-          <label>Date &amp; Time</label>
-          <input type="datetime-local" id="event-start" required />
+// ---------------------------------------------------------
+// DOM ELEMENTS
+// ---------------------------------------------------------
+const eventTitleInput = document.getElementById("event-title");
+const eventStartInput = document.getElementById("event-start");
+const eventLocationInput = document.getElementById("event-location");
+const eventDescriptionInput = document.getElementById("event-description");
+const eventPublicInput = document.getElementById("event-public");
+const eventForm = document.getElementById("editEventForm");
+const eventFormMessage = document.getElementById("eventFormMessage");
 
-          <label>Location</label>
-          <input type="text" id="event-location" />
+const slotNameInput = document.getElementById("slot-name");
+const slotCategoryInput = document.getElementById("slot-category");
+const slotQuantityInput = document.getElementById("slot-quantity");
+const slotStartInput = document.getElementById("slot-start");
+const slotEndInput = document.getElementById("slot-end");
+const slotDescriptionInput = document.getElementById("slot-description");
+const slotForm = document.getElementById("newSlotForm");
+const slotMessage = document.getElementById("slotMessage");
 
-          <label>Description</label>
-          <textarea id="event-description"></textarea>
+const existingSlotsContainer = document.getElementById("existingSlots");
 
-          <label class="checkbox-row">
-            <input type="checkbox" id="event-public" />
-            <span>Show this event on the public events page</span>
-          </label>
+// ---------------------------------------------------------
+// Load event on page load
+// ---------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  loadEventDetails();
+});
 
-          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
-            Save Event
-          </button>
+// ---------------------------------------------------------
+// Fetch event by ID and populate form fields
+// ---------------------------------------------------------
+async function loadEventDetails() {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
+    .single();
 
-          <p id="eventFormMessage" class="helper-text" style="display:none; margin-top:10px;"></p>
-        </form>
-      </article>
+  if (error) {
+    console.error("Error loading event:", error);
+    eventFormMessage.textContent = "Error loading event.";
+    eventFormMessage.style.display = "block";
+    return;
+  }
 
-      <!-- SLOT CREATION FORM -->
-      <article class="card" id="newSlotCard">
-        <h2>Add New Slot</h2>
+  // Populate form with values
+  eventTitleInput.value = data.title || "";
+  eventStartInput.value = data.start_time
+    ? data.start_time.substring(0, 16)
+    : "";
+  eventLocationInput.value = data.location || "";
+  eventDescriptionInput.value = data.description || "";
+  eventPublicInput.checked = data.is_public === true;
 
-        <form id="newSlotForm">
-          <label>Slot Name</label>
-          <input type="text" id="slot-name" required />
+  // Load slots AFTER event loads
+  loadSlots();
+}
 
-          <label>Category</label>
-          <select id="slot-category">
-            <option value="volunteer">Volunteers</option>
-            <option value="food">Food Donations</option>
-            <option value="concessions">Concessions</option>
-            <option value="admissions">Admissions</option>
-            <option value="matcrew">Mat Crew</option>
-            <option value="other">Other</option>
-          </select>
+// ---------------------------------------------------------
+// Update event details
+// ---------------------------------------------------------
+eventForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  eventFormMessage.style.display = "none";
 
-          <label>Total Quantity</label>
-          <input type="number" id="slot-quantity" required min="1" />
+  const updatedEvent = {
+    title: eventTitleInput.value.trim(),
+    start_time: eventStartInput.value,
+    location: eventLocationInput.value.trim() || null,
+    description: eventDescriptionInput.value.trim() || null,
+    is_public: eventPublicInput.checked,
+  };
 
-          <label>Start Time</label>
-          <input type="time" id="slot-start" />
+  const { error } = await supabase
+    .from("events")
+    .update(updatedEvent)
+    .eq("id", eventId);
 
-          <label>End Time</label>
-          <input type="time" id="slot-end" />
+  if (error) {
+    console.error("Error updating event:", error);
+    eventFormMessage.textContent = "Error updating event.";
+    eventFormMessage.style.display = "block";
+    return;
+  }
 
-          <label>Optional Notes</label>
-          <textarea id="slot-description"></textarea>
+  eventFormMessage.textContent = "Event updated successfully!";
+  eventFormMessage.style.display = "block";
+});
 
-          <button type="submit" class="btn btn-primary" style="margin-top:10px;">
-            Add Slot
-          </button>
+// ---------------------------------------------------------
+// Add new slot
+// ---------------------------------------------------------
+slotForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  slotMessage.style.display = "none";
 
-          <p id="slotMessage" class="helper-text" style="display:none; margin-top:10px;"></p>
-        </form>
-      </article>
+  const newSlot = {
+    event_id: eventId,
+    name: slotNameInput.value.trim(),
+    category: slotCategoryInput.value,
+    quantity_total: Number(slotQuantityInput.value) || 1,
+    start_time: slotStartInput.value || null,
+    end_time: slotEndInput.value || null,
+    description: slotDescriptionInput.value.trim() || null,
+  };
 
-      <!-- EXISTING SLOTS LIST -->
-      <section class="section-title" style="margin-top: 40px;">
-        <h2>Existing Slots</h2>
-      </section>
+  const { error } = await supabase.from("slots").insert(newSlot);
 
-      <section id="existingSlots"></section>
-    </main>
+  if (error) {
+    console.error("Error adding slot:", error);
+    slotMessage.textContent = "Error adding slot.";
+    slotMessage.style.display = "block";
+    return;
+  }
 
-    <script type="module" src="admin-edit-event.js"></script>
-  </body>
-</html>
+  slotMessage.textContent = "Slot added successfully!";
+  slotMessage.style.display = "block";
+
+  // Clear form fields
+  slotNameInput.value = "";
+  slotQuantityInput.value = "";
+  slotStartInput.value = "";
+  slotEndInput.value = "";
+  slotDescriptionInput.value = "";
+
+  // Reload slots list
+  loadSlots();
+});
+
+// ---------------------------------------------------------
+// Load all slots for this event
+// ---------------------------------------------------------
+async function loadSlots() {
+  existingSlotsContainer.innerHTML = "<p>Loading slots…</p>";
+
+  const { data, error } = await supabase
+    .from("slots")
+    .select("*, signups(id)")
+    .eq("event_id", eventId);
+
+  if (error) {
+    console.error("Error loading slots:", error);
+    existingSlotsContainer.innerHTML = "<p>Error loading slots.</p>";
+    return;
+  }
+
+  if (!data.length) {
+    existingSlotsContainer.innerHTML = "<p>No slots created yet.</p>";
+    return;
+  }
+
+  existingSlotsContainer.innerHTML = "";
+
+  data.forEach((slot) => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h3>${slot.name}</h3>
+      <p><strong>Category:</strong> ${slot.category}</p>
+      <p><strong>Total Spots:</strong> ${slot.quantity_total}</p>
+      <p><strong>Filled:</strong> ${slot.signups?.length || 0}</p>
+      ${
+        slot.start_time && slot.end_time
+          ? `<p><strong>Time:</strong> ${slot.start_time} – ${slot.end_time}</p>`
+          : ""
+      }
+      ${
+        slot.description
+          ? `<p><strong>Notes:</strong> ${slot.description}</p>`
+          : ""
+      }
+    `;
+
+    existingSlotsContainer.appendChild(card);
+  });
+}
