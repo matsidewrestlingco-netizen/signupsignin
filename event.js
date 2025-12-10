@@ -1,126 +1,209 @@
+// event.js — Public event detail + slot signup
+
 import { supabase } from "./supabaseClient.js";
 
-// Get event ID from URL
+// Parse event ID from URL
 const url = new URL(window.location.href);
 const eventId = url.searchParams.get("id");
 
+if (!eventId) {
+  alert("Missing event ID.");
+  window.location.href = "index.html";
+}
+
+// DOM elements
+const titleEl = document.getElementById("event-title");
+const dateEl = document.getElementById("event-date");
+const locationEl = document.getElementById("event-location");
+const descriptionEl = document.getElementById("event-description");
+const slotListEl = document.getElementById("slot-list");
+const messageEl = document.getElementById("message");
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadEvent();
+  loadSlots();
+});
+
+// ------------------------
+// Load Event Details
+// ------------------------
 async function loadEvent() {
-  const titleEl = document.getElementById("event-title");
-  const dateEl = document.getElementById("event-date");
-  const locationEl = document.getElementById("event-location");
-  const descEl = document.getElementById("event-description");
-  const slotListEl = document.getElementById("slot-list");
-  const messageEl = document.getElementById("message");
-
-  if (!eventId) {
-    titleEl.textContent = "Event Not Found";
-    return;
-  }
-
-  // Fetch event
-  const { data: event, error: eventError } = await supabase
+  const { data, error } = await supabase
     .from("events")
     .select("*")
     .eq("id", eventId)
     .single();
 
-  if (eventError || !event) {
-    titleEl.textContent = "Event Not Found";
+  if (error || !data) {
+    titleEl.textContent = "Event not found.";
     return;
   }
 
-  // Fill event info
-  titleEl.textContent = event.title;
-  dateEl.textContent = new Date(event.start_time).toLocaleString();
-  locationEl.textContent = event.location || "";
-  descEl.textContent = event.description || "";
+  titleEl.textContent = data.title;
+  dateEl.textContent = formatDate(data.start_time);
+  locationEl.textContent = data.location || "";
+  descriptionEl.textContent = data.description || "";
+}
 
-  // Fetch slots
-  const { data: slots, error: slotError } = await supabase
+// ------------------------
+// Load Available Slots
+// ------------------------
+async function loadSlots() {
+  slotListEl.innerHTML = "<p>Loading slots…</p>";
+
+  const { data, error } = await supabase
     .from("slots")
-    .select("*, signups(*)")
+    .select("*, signups(id)")
     .eq("event_id", eventId)
     .order("start_time", { ascending: true });
 
-  if (slotError) {
-    messageEl.textContent = "Error loading slots.";
+  if (error) {
+    console.error("Error loading slots:", error);
+    slotListEl.innerHTML = "<p>Error loading slots.</p>";
     return;
   }
 
-  if (!slots || slots.length === 0) {
-    slotListEl.innerHTML = `<p>No slots have been created for this event.</p>`;
+  if (!data.length) {
+    slotListEl.innerHTML = "<p>No slots available.</p>";
     return;
   }
 
-  // Group slots by category
-  const grouped = {};
-  slots.forEach((slot) => {
-    const key = slot.category || "other";
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(slot);
-  });
+  renderSlots(data);
+}
 
-  // Render slot categories + cards
+function renderSlots(slots) {
   slotListEl.innerHTML = "";
 
-  Object.keys(grouped).forEach((categoryName) => {
-    const niceName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+  slots.forEach((slot) => {
+    const remaining = slot.quantity_total - (slot.signups?.length || 0);
 
-    // CATEGORY HEADER
-    const categoryHeader = document.createElement("h3");
-    categoryHeader.className = "slot-category-header";
-    categoryHeader.textContent = niceName;
-    slotListEl.appendChild(categoryHeader);
+    const card = document.createElement("article");
+    card.className = "card";
 
-    grouped[categoryName].forEach((slot) => {
-      const filled = slot.signups?.length || 0;
-      const remaining = slot.quantity_total - filled;
+    card.innerHTML = `
+      <h3>${slot.name}</h3>
 
-      const card = document.createElement("div");
-      card.className = "card slot-card";
+      ${
+        slot.start_time && slot.end_time
+          ? `<p><strong>${formatTime(slot.start_time)} – ${formatTime(slot.end_time)}</strong></p>`
+          : ""
+      }
 
-      card.innerHTML = `
-        <h4 class="slot-title">${slot.name}</h4>
-        <p class="slot-time">${slot.start_time || ""} – ${slot.end_time || ""}</p>
-        <p><strong>${filled} / ${slot.quantity_total}</strong></p>
-        <p class="slot-remaining">${remaining} remaining</p>
+      ${
+        slot.description
+          ? `<p>${slot.description}</p>`
+          : ""
+      }
 
-        ${
-          remaining > 0
-            ? `<button class="btn btn-primary signup-btn" data-slot="${slot.id}">
-                 Sign Up
-               </button>`
-            : `<p class="slot-full">Full</p>`
-        }
-      `;
+      <p><strong>${remaining}</strong> spots remaining</p>
 
-      slotListEl.appendChild(card);
-    });
+      ${
+        remaining > 0
+          ? `
+          <button class="btn btn-primary signup-btn" data-slot="${slot.id}">
+            Sign Up
+          </button>
+
+          <div class="signup-form" id="form-${slot.id}" style="display:none;">
+            <input type="text" placeholder="Your name" class="input-name" />
+            <input type="email" placeholder="Your email" class="input-email" />
+            <textarea placeholder="Optional note" class="input-note"></textarea>
+
+            <button class="btn btn-primary confirm-btn" data-slot="${slot.id}">
+              Confirm
+            </button>
+            <button class="btn btn-secondary cancel-btn" data-slot="${slot.id}">
+              Cancel
+            </button>
+          </div>
+        `
+          : `<p class="helper-text">This slot is full.</p>`
+      }
+    `;
+
+    slotListEl.appendChild(card);
   });
 
-  // Attach signup button handlers
+  enableSignupButtons();
+}
+
+// ------------------------
+// Signup Flow
+// ------------------------
+function enableSignupButtons() {
   document.querySelectorAll(".signup-btn").forEach((btn) => {
-    btn.addEventListener("click", () => openSignupForm(btn.dataset.slot));
+    btn.addEventListener("click", () => {
+      const slotId = btn.dataset.slot;
+      document.getElementById(`form-${slotId}`).style.display = "block";
+    });
+  });
+
+  document.querySelectorAll(".cancel-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const slotId = btn.dataset.slot;
+      document.getElementById(`form-${slotId}`).style.display = "none";
+    });
+  });
+
+  document.querySelectorAll(".confirm-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const slotId = btn.dataset.slot;
+      submitSignup(slotId);
+    });
   });
 }
 
-function openSignupForm(slotId) {
-  const name = prompt("Your Name:");
-  const email = prompt("Your Email:");
+async function submitSignup(slotId) {
+  messageEl.textContent = "";
 
-  if (!name || !email) return;
+  const form = document.getElementById(`form-${slotId}`);
+  const fullName = form.querySelector(".input-name").value.trim();
+  const email = form.querySelector(".input-email").value.trim();
+  const note = form.querySelector(".input-note").value.trim() || null;
 
-  supabase
-    .from("signups")
-    .insert({
-      slot_id: slotId,
-      full_name: name,
-      email: email,
-    })
-    .then(({ error }) => {
-      if (error) alert("Error saving signup.");
-      else location.reload();
-    });
+  if (!fullName || !email) {
+    messageEl.textContent = "Please enter your name and email.";
+    return;
+  }
+
+  const { error } = await supabase.from("signups").insert({
+    slot_id: slotId,
+    full_name: fullName,
+    email,
+    note,
+  });
+
+  if (error) {
+    console.error(error);
+    messageEl.textContent = "Signup failed.";
+    return;
+  }
+
+  messageEl.textContent = "Signup successful!";
+  loadSlots();
 }
 
-loadEvent();
+// ------------------------
+// Helpers
+// ------------------------
+function formatDate(iso) {
+  return new Date(iso).toLocaleString([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function formatTime(timeString) {
+  if (!timeString) return "";
+  const [hour, minute] = timeString.split(":").map(Number);
+  const date = new Date();
+  date.setHours(hour);
+  date.setMinutes(minute);
+  return date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
