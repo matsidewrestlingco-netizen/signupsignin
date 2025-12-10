@@ -1,9 +1,20 @@
+// admin-edit-event.js
+// =========================================================
+// Full file: admin authentication, load event, update event,
+// create slots, load slots.
+// =========================================================
+
+import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
 
-// Require login
+// ---------------------------------------------------------
+// Enforce admin login
+// ---------------------------------------------------------
 requireAdmin();
 
-// Enable log out
+// ---------------------------------------------------------
+// Logout button
+// ---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
@@ -14,35 +25,50 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// admin-edit-event.js
-import { supabase } from "./supabaseClient.js";
-
-// ----------------------------
-// Extract event ID from URL
-// ----------------------------
+// ---------------------------------------------------------
+// Parse event ID from URL
+// ---------------------------------------------------------
 const url = new URL(window.location.href);
 const eventId = url.searchParams.get("id");
 
 if (!eventId) {
-  alert("No event ID found in URL.");
-  console.error("Missing ?id= parameter");
+  alert("Missing event ID.");
+  window.location.href = "admin-events.html";
 }
 
-// ----------------------------
-// Utility: Convert "HH:MM" -> "HH:MM:00"
-// ----------------------------
-function toPgTime(t) {
-  if (!t) return null;
-  const clean = t.trim().slice(0, 5); // ensure HH:MM only
-  return `${clean}:00`;
-}
+// ---------------------------------------------------------
+// DOM ELEMENTS
+// ---------------------------------------------------------
+const eventTitleInput = document.getElementById("event-title");
+const eventStartInput = document.getElementById("event-start");
+const eventLocationInput = document.getElementById("event-location");
+const eventDescriptionInput = document.getElementById("event-description");
+const eventPublicInput = document.getElementById("event-public");
+const eventForm = document.getElementById("editEventForm");
+const eventFormMessage = document.getElementById("eventFormMessage");
 
-// ----------------------------
-// Load Event
-// ----------------------------
-async function loadEvent() {
-  console.log("Loading event", eventId);
+const slotNameInput = document.getElementById("slot-name");
+const slotCategoryInput = document.getElementById("slot-category");
+const slotQuantityInput = document.getElementById("slot-quantity");
+const slotStartInput = document.getElementById("slot-start");
+const slotEndInput = document.getElementById("slot-end");
+const slotDescriptionInput = document.getElementById("slot-description");
+const slotForm = document.getElementById("newSlotForm");
+const slotMessage = document.getElementById("slotMessage");
 
+const existingSlotsContainer = document.getElementById("existingSlots");
+
+// ---------------------------------------------------------
+// Load event on page load
+// ---------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  loadEventDetails();
+});
+
+// ---------------------------------------------------------
+// Fetch event by ID and populate form fields
+// ---------------------------------------------------------
+async function loadEventDetails() {
   const { data, error } = await supabase
     .from("events")
     .select("*")
@@ -51,211 +77,140 @@ async function loadEvent() {
 
   if (error) {
     console.error("Error loading event:", error);
-    alert("Could not load event.");
+    eventFormMessage.textContent = "Error loading event.";
+    eventFormMessage.style.display = "block";
     return;
   }
 
-  // Populate form
-  document.querySelector("#title").value = data.title || "";
-  document.querySelector("#description").value = data.description || "";
-  document.querySelector("#location").value = data.location || "";
+  // Populate form with values
+  eventTitleInput.value = data.title || "";
+  eventStartInput.value = data.start_time
+    ? data.start_time.substring(0, 16)
+    : "";
+  eventLocationInput.value = data.location || "";
+  eventDescriptionInput.value = data.description || "";
+  eventPublicInput.checked = data.is_public === true;
 
-  // Fill date input (YYYY-MM-DD)
-  if (data.start_time) {
-    document.querySelector("#date").value =
-      data.start_time.split("T")[0] || "";
-  }
-
-  // Convert timestamps → HH:MM local
-  if (data.start_time) {
-    const d = new Date(data.start_time);
-    document.querySelector("#start_time").value =
-      d.toISOString().slice(11, 16);
-  }
-
-  if (data.end_time) {
-    const d = new Date(data.end_time);
-    document.querySelector("#end_time").value =
-      d.toISOString().slice(11, 16);
-  }
-}
-
-// ----------------------------
-// Load Slots
-// ----------------------------
-async function loadSlots() {
-  const container = document.querySelector("#existing-slots");
-  container.innerHTML = "Loading…";
-
-  const { data, error } = await supabase
-    .from("slots")
-    .select("*")
-    .eq("event_id", eventId)
-    .order("start_time", { ascending: true });
-
-  if (error) {
-    console.error("Error loading slots:", error);
-    container.innerHTML = "<p>Error loading slots.</p>";
-    return;
-  }
-
-  if (!data.length) {
-    container.innerHTML = "<p>No slots created yet.</p>";
-    return;
-  }
-
-  container.innerHTML = "";
-
-  data.forEach((slot) => {
-    const div = document.createElement("div");
-    div.className = "slot-card";
-
-    div.innerHTML = `
-      <div class="slot-card-header">
-        <strong>${slot.name}</strong>
-        <button class="delete-slot btn-secondary" data-id="${slot.id}">
-          Delete
-        </button>
-      </div>
-
-      ${slot.description ? `<p>${slot.description}</p>` : ""}
-
-      <div class="slot-card-meta">
-        <p><strong>Qty:</strong> ${slot.quantity_total}</p>
-        <p><strong>Time:</strong> ${slot.start_time || "—"} → ${slot.end_time || "—"}</p>
-        <p><strong>Category:</strong> ${slot.category || "—"}</p>
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
-
-  // Wire up delete buttons
-  document.querySelectorAll(".delete-slot").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
-      const slotId = e.target.dataset.id;
-      await deleteSlot(slotId);
-    });
-  });
-}
-
-// ----------------------------
-// Add Slot
-// ----------------------------
-async function addSlot() {
-  const name = document.querySelector("#slot-name").value.trim();
-  const description = document.querySelector("#slot-description").value.trim();
-  const qty = parseInt(document.querySelector("#slot-qty").value, 10);
-  const start = document.querySelector("#slot-start").value;
-  const end = document.querySelector("#slot-end").value;
-  const category = document.querySelector("#slot-category").value.trim();
-
-  if (!name) return alert("Slot name is required.");
-  if (!qty || Number.isNaN(qty)) return alert("Quantity must be a number.");
-
-  const payload = {
-    event_id: eventId,
-    name,
-    description: description || null,
-    quantity_total: qty,
-    start_time: toPgTime(start),
-    end_time: toPgTime(end),
-    category: category || null,
-    created_at: new Date().toISOString(), // forces validity if column is NOT NULL
-  };
-
-  console.log("Adding slot:", payload);
-
-  const { data, error } = await supabase
-    .from("slots")
-    .insert(payload)
-    .select();
-
-  if (error) {
-    console.error("Error adding slot:", error);
-    alert("Error adding slot:\n" + JSON.stringify(error, null, 2));
-    return;
-  }
-
-  alert("Slot added!");
-
-  // Clear inputs
-  document.querySelector("#slot-name").value = "";
-  document.querySelector("#slot-description").value = "";
-  document.querySelector("#slot-qty").value = "";
-  document.querySelector("#slot-start").value = "";
-  document.querySelector("#slot-end").value = "";
-  document.querySelector("#slot-category").value = "";
-
+  // Load slots AFTER event loads
   loadSlots();
 }
 
-// ----------------------------
-// Delete Slot
-// ----------------------------
-async function deleteSlot(slotId) {
-  if (!confirm("Delete this slot?")) return;
+// ---------------------------------------------------------
+// Update event details
+// ---------------------------------------------------------
+eventForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  eventFormMessage.style.display = "none";
 
-  const { error } = await supabase
-    .from("slots")
-    .delete()
-    .eq("id", slotId);
-
-  if (error) {
-    console.error("Error deleting slot:", error);
-    alert("Could not delete slot.");
-    return;
-  }
-
-  loadSlots();
-}
-
-// ----------------------------
-// Save Event
-// ----------------------------
-async function saveEvent() {
-  const title = document.querySelector("#title").value.trim();
-  const description = document.querySelector("#description").value.trim();
-  const location = document.querySelector("#location").value.trim();
-  const date = document.querySelector("#date").value;
-  const start = document.querySelector("#start_time").value;
-  const end = document.querySelector("#end_time").value;
-
-  const startISO = date && start ? `${date}T${start}:00` : null;
-  const endISO = date && end ? `${date}T${end}:00` : null;
-
-  const payload = {
-    title,
-    description,
-    location,
-    start_time: startISO,
-    end_time: endISO,
+  const updatedEvent = {
+    title: eventTitleInput.value.trim(),
+    start_time: eventStartInput.value,
+    location: eventLocationInput.value.trim() || null,
+    description: eventDescriptionInput.value.trim() || null,
+    is_public: eventPublicInput.checked,
   };
-
-  console.log("Saving event:", payload);
 
   const { error } = await supabase
     .from("events")
-    .update(payload)
+    .update(updatedEvent)
     .eq("id", eventId);
 
   if (error) {
     console.error("Error updating event:", error);
-    alert("Could not save event:\n" + JSON.stringify(error, null, 2));
+    eventFormMessage.textContent = "Error updating event.";
+    eventFormMessage.style.display = "block";
     return;
   }
 
-  alert("Event saved!");
+  eventFormMessage.textContent = "Event updated successfully!";
+  eventFormMessage.style.display = "block";
+});
+
+// ---------------------------------------------------------
+// Add new slot
+// ---------------------------------------------------------
+slotForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  slotMessage.style.display = "none";
+
+  const newSlot = {
+    event_id: eventId,
+    name: slotNameInput.value.trim(),
+    category: slotCategoryInput.value,
+    quantity_total: Number(slotQuantityInput.value) || 1,
+    start_time: slotStartInput.value || null,
+    end_time: slotEndInput.value || null,
+    description: slotDescriptionInput.value.trim() || null,
+  };
+
+  const { error } = await supabase.from("slots").insert(newSlot);
+
+  if (error) {
+    console.error("Error adding slot:", error);
+    slotMessage.textContent = "Error adding slot.";
+    slotMessage.style.display = "block";
+    return;
+  }
+
+  slotMessage.textContent = "Slot added successfully!";
+  slotMessage.style.display = "block";
+
+  // Clear form fields
+  slotNameInput.value = "";
+  slotQuantityInput.value = "";
+  slotStartInput.value = "";
+  slotEndInput.value = "";
+  slotDescriptionInput.value = "";
+
+  // Reload slots list
+  loadSlots();
+});
+
+// ---------------------------------------------------------
+// Load all slots for this event
+// ---------------------------------------------------------
+async function loadSlots() {
+  existingSlotsContainer.innerHTML = "<p>Loading slots…</p>";
+
+  const { data, error } = await supabase
+    .from("slots")
+    .select("*, signups(id)")
+    .eq("event_id", eventId);
+
+  if (error) {
+    console.error("Error loading slots:", error);
+    existingSlotsContainer.innerHTML = "<p>Error loading slots.</p>";
+    return;
+  }
+
+  if (!data.length) {
+    existingSlotsContainer.innerHTML = "<p>No slots created yet.</p>";
+    return;
+  }
+
+  existingSlotsContainer.innerHTML = "";
+
+  data.forEach((slot) => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h3>${slot.name}</h3>
+      <p><strong>Category:</strong> ${slot.category}</p>
+      <p><strong>Total Spots:</strong> ${slot.quantity_total}</p>
+      <p><strong>Filled:</strong> ${slot.signups?.length || 0}</p>
+      ${
+        slot.start_time && slot.end_time
+          ? `<p><strong>Time:</strong> ${slot.start_time} – ${slot.end_time}</p>`
+          : ""
+      }
+      ${
+        slot.description
+          ? `<p><strong>Notes:</strong> ${slot.description}</p>`
+          : ""
+      }
+    `;
+
+    existingSlotsContainer.appendChild(card);
+  });
 }
-
-// ----------------------------
-// Wire Up Buttons
-// ----------------------------
-document.querySelector("#add-slot-btn").addEventListener("click", addSlot);
-document.querySelector("#save-event-btn").addEventListener("click", saveEvent);
-
-// ----------------------------
-// Initial Load
-// ----------------------------
-loadEvent();
-loadSlots();
