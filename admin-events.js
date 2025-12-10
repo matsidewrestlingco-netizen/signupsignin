@@ -1,9 +1,11 @@
+// admin-events.js
+import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
 
-// Require login
+// Enforce admin login
 requireAdmin();
 
-// Enable log out
+// Wire up logout + then load events
 document.addEventListener("DOMContentLoaded", () => {
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
@@ -12,28 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
       logoutAdmin();
     });
   }
+
+  loadEvents();
 });
 
-// admin-events.js
-// Admin dashboard: load events, stats, sorting, filtering
-import { supabase } from "./supabaseClient.js";
-
-/* --------------------------
-   DOM elements
--------------------------- */
-
+/* DOM elements */
 const eventsContainer = document.getElementById("adminEventsList");
 const searchInput = document.getElementById("search-input");
 const sortSelect = document.getElementById("sort-select");
 const toggleUpcoming = document.getElementById("toggle-upcoming");
 
-/* Cached data */
 let allEvents = [];
 let slotStats = {};
-
-/* --------------------------
-   Load all events
--------------------------- */
 
 async function loadEvents() {
   eventsContainer.innerHTML = "<p>Loading events…</p>";
@@ -81,10 +73,6 @@ async function loadEvents() {
   renderEvents();
 }
 
-/* --------------------------
-   Render event cards (FIXED)
--------------------------- */
-
 function renderEvents() {
   let events = [...allEvents];
   const now = new Date();
@@ -129,9 +117,6 @@ function renderEvents() {
       ? Math.round((stats.totalSignups / stats.totalCapacity) * 100)
       : 0;
 
-    // -----------------------------
-    // 🚀 Styled card using your CSS
-    // -----------------------------
     const card = document.createElement("article");
     card.className = "card";
 
@@ -155,10 +140,6 @@ function renderEvents() {
   });
 }
 
-/* --------------------------
-   Format date
--------------------------- */
-
 function formatDate(iso) {
   return new Date(iso).toLocaleString([], {
     weekday: "short",
@@ -169,17 +150,9 @@ function formatDate(iso) {
   });
 }
 
-/* --------------------------
-   Handlers
--------------------------- */
-
 searchInput?.addEventListener("input", renderEvents);
 sortSelect?.addEventListener("change", renderEvents);
 toggleUpcoming?.addEventListener("change", renderEvents);
-
-/* --------------------------
-   Delete Event (Soft Delete)
--------------------------- */
 
 eventsContainer.addEventListener("click", async (e) => {
   const btn = e.target.closest(".delete-event-btn");
@@ -188,7 +161,7 @@ eventsContainer.addEventListener("click", async (e) => {
   const eventId = btn.dataset.eventId;
 
   const ok = confirm(
-    "Are you sure you want to delete this event? This action can be undone, but it will disappear from public view."
+    "Are you sure you want to delete this event? It will disappear from public view."
   );
   if (!ok) return;
 
@@ -205,9 +178,3 @@ eventsContainer.addEventListener("click", async (e) => {
 
   await loadEvents();
 });
-
-/* --------------------------
-   Init
--------------------------- */
-
-loadEvents();
