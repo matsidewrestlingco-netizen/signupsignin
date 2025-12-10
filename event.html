@@ -2,38 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>signUPsignIN – Event</title>
+    <title>signUPsignIN – Event Details</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <!-- UNIFIED HEADER (Option A) -->
+
+    <!-- UNIFIED BLUE HEADER (same as all other pages) -->
     <header class="header-bar">
       <div class="header-left">
         <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-        <div class="header-title">signUPsignIN</div>
+        <div class="header-title">Event Details</div>
       </div>
 
       <nav class="nav-links">
-        <a href="index.html">Events</a>
+        <a href="index.html">All Events</a>
         <a href="admin-events.html">Admin</a>
       </nav>
     </header>
 
-    <!-- PAGE CONTENT -->
+    <!-- MAIN CONTENT CONTAINER -->
     <main class="page-container">
+
+      <!-- EVENT TITLE SECTION -->
       <section class="section-title">
-        <h1 id="eventTitle">Event</h1>
-        <p id="eventSubtitle">Loading event details…</p>
+        <h1 id="event-title">Loading event...</h1>
+        <p id="event-date"></p>
+        <p id="event-location"></p>
       </section>
 
-      <!-- EVENT DETAILS + SLOT CARDS (JS injects here) -->
-      <section id="eventDetails"></section>
+      <!-- EVENT DESCRIPTION CARD -->
+      <article class="card">
+        <p id="event-description"></p>
+      </article>
 
-      <p id="eventMessage" class="helper-text" style="display:none;"></p>
+      <!-- SLOTS SECTION -->
+      <section class="section-title" style="margin-top: 35px;">
+        <h2>Available Slots</h2>
+      </section>
+
+      <!-- WHERE JS WILL INJECT SLOT CARDS -->
+      <section id="slot-list"></section>
+
+      <!-- STATUS / MESSAGE AREA -->
+      <p id="message" class="helper-text" style="margin-top: 20px;"></p>
+
     </main>
 
+    <!-- EVENT PAGE SCRIPT -->
     <script type="module" src="event.js"></script>
+
   </body>
 </html>
