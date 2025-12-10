@@ -95,6 +95,58 @@ body {
   font-weight: 600;
 }
 
+/* --- ADMIN HEADER (standardized across all admin pages) --- */
+
+.top-bar {
+  background: #243c7c;
+  color: #fff;
+  padding: 14px 0;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.top-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px; /* adds breathing room on the left/right */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* previously too tight */
+}
+
+.site-logo {
+  height: 38px; /* slightly larger but not overpowering */
+  width: auto;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.top-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 26px;
+  font-weight: 500;
+}
+
+.top-nav a:hover {
+  text-decoration: underline;
+}
+
+.top-nav .active {
+  text-decoration: underline;
+}
+
 /* ---------------------------------------------------------
    CARDS
    --------------------------------------------------------- */
