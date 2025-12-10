@@ -1,3 +1,4 @@
+// auth.js
 export function requireAdmin() {
   const authed = localStorage.getItem("matside_admin");
   if (authed !== "true") {
