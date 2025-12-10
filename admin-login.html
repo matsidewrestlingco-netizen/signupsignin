@@ -8,8 +8,7 @@
 </head>
 
 <body>
-
-  <!-- UNIFIED BLUE HEADER -->
+  <!-- Full-width admin header -->
   <header class="header-bar">
     <div class="header-left">
       <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
@@ -22,18 +21,14 @@
     </nav>
   </header>
 
-  <!-- MAIN CONTENT -->
   <main class="page-container">
-
     <section class="section-title">
       <h1>Administrator Access</h1>
-      <p>Please enter your password to access event management tools.</p>
+      <p>Please enter the admin password to manage events and slots.</p>
     </section>
 
     <article class="card" style="max-width: 420px; margin: 0 auto;">
-
       <form id="admin-login-form">
-
         <label for="admin-password">Admin Password</label>
         <input type="password" id="admin-password" required />
 
@@ -42,10 +37,8 @@
         </button>
 
         <p id="login-error" class="helper-text" style="display:none; margin-top: 10px;"></p>
-
       </form>
     </article>
-
   </main>
 
   <script type="module" src="admin-login.js"></script>
