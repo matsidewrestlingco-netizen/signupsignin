@@ -1,46 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>signUPsignIN – Admin Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>signUPsignIN – Create Event</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-  <body>
-    <!-- UNIFIED HEADER -->
-    <header class="header-bar">
-      <div class="header-left">
-        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-        <div class="header-title">signUPsignIN Admin</div>
-      </div>
+<body>
+  <!-- Full-width admin header -->
+  <header class="header-bar">
+    <div class="header-left">
+      <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+      <div class="header-title">Admin – Create Event</div>
+    </div>
 
-      <nav class="nav-links">
-        <a href="index.html">Events</a>
-        <a href="admin-events.html">Manage Events</a>
-        <a href="#" id="logout-link">Log Out</a>
-      </nav>
-    </header>
+    <nav class="nav-links">
+      <a href="admin-events.html">Manage Events</a>
+      <a href="admin.html" class="active">Create Event</a>
+      <a href="index.html">Public View</a>
+      <a href="#" id="logout-link">Log Out</a>
+    </nav>
+  </header>
 
-    <!-- MAIN LOGIN CONTAINER -->
-    <main class="page-container">
-      <div class="card" style="max-width: 420px; margin: 40px auto;">
-        <h2>Admin Login</h2>
-        <p>Please enter your admin password to access event management tools.</p>
+  <main class="page-container">
+    <section class="section-title">
+      <h1>Create New Event</h1>
+      <p>Use this form to create a new event for parents to sign up for.</p>
+    </section>
 
-        <form id="adminLoginForm" class="mt-20">
-          <label for="password">Admin Password</label>
-          <input type="password" id="password" required />
+    <article class="card" style="max-width: 640px;">
+      <form id="createEventForm">
+        <label for="event-title">Event Title</label>
+        <input type="text" id="event-title" required />
 
-          <button type="submit" class="btn btn-primary mt-20" style="width: 100%;">
-            Sign In
-          </button>
+        <label for="event-start">Date &amp; Start Time</label>
+        <input type="datetime-local" id="event-start" required />
 
-          <p id="loginMessage" class="helper-text" style="margin-top: 14px; display:none;"></p>
-        </form>
-      </div>
-    </main>
+        <label for="event-location">Location</label>
+        <input type="text" id="event-location" />
 
-    <script type="module" src="admin.js"></script>
-  </body>
+        <label for="event-description">Description</label>
+        <textarea id="event-description"></textarea>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="event-public" checked />
+          <span>Show this event on the public events page</span>
+        </label>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
+          Create Event
+        </button>
+
+        <p id="createEventMessage" class="helper-text" style="margin-top: 10px;"></p>
+      </form>
+    </article>
+  </main>
+
+  <script type="module" src="admin.js"></script>
+</body>
 </html>
