@@ -1,114 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Matside – Admin Create Event</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body class="page page-admin">
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <div class="brand">
-         <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" /> <br>
-         <span class="site-title">Admin Dashboard</span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>signUPsignIN – Admin Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- UNIFIED HEADER -->
+    <header class="header-bar">
+      <div class="header-left">
+        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+        <div class="header-title">signUPsignIN Admin</div>
       </div>
-      <nav class="top-nav">
-        <a href="index.html">Public Events</a>
+
+      <nav class="nav-links">
+        <a href="index.html">Events</a>
         <a href="admin-events.html">Manage Events</a>
-        <a href="admin.html" class="active">Create Event</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="main-wrap">
-    <section class="card">
-      <h1 class="card-title">Create New Event</h1>
-      <p class="card-subtitle">
-        Add a new match night, dual, or tournament. You can attach slots and sign-ups later.
-      </p>
+    <!-- MAIN LOGIN CONTAINER -->
+    <main class="page-container">
+      <div class="card" style="max-width: 420px; margin: 40px auto;">
+        <h2>Admin Login</h2>
+        <p>Please enter your admin password to access event management tools.</p>
 
-      <form id="create-event-form" class="form-grid">
-        <div class="form-field">
-          <label for="title">Event name<span class="req">*</span></label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            required
-            maxlength="120"
-            placeholder="Shaler vs North Hills – Varsity Dual"
-          />
-        </div>
+        <form id="adminLoginForm" class="mt-20">
+          <label for="password">Admin Password</label>
+          <input type="password" id="password" required />
 
-        <div class="form-field">
-          <label for="location">Location</label>
-          <input
-            id="location"
-            name="location"
-            type="text"
-            maxlength="160"
-            placeholder="Shaler Area High School Gym"
-          />
-        </div>
-
-        <div class="form-field form-field-inline">
-          <div>
-            <label for="date">Date<span class="req">*</span></label>
-            <input id="date" name="date" type="date" required />
-          </div>
-          <div>
-            <label for="startTime">Start time<span class="req">*</span></label>
-            <input id="startTime" name="startTime" type="time" required />
-          </div>
-          <div>
-            <label for="endTime">End time</label>
-            <input id="endTime" name="endTime" type="time" />
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            rows="3"
-            maxlength="600"
-            placeholder="Short description – who’s wrestling, divisions, anything parents should know."
-          ></textarea>
-        </div>
-
-        <div class="form-field form-field-inline">
-          <label class="checkbox-label">
-            <input id="isPublic" name="isPublic" type="checkbox" checked />
-            <span>Show this event on the public events page</span>
-          </label>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" id="submit-btn" class="btn-primary">
-            Create event
+          <button type="submit" class="btn btn-primary mt-20" style="width: 100%;">
+            Sign In
           </button>
-          <button type="button" id="reset-btn" class="btn-ghost">
-            Reset form
-          </button>
-        </div>
 
-        <p id="status" class="status-message" aria-live="polite"></p>
-      </form>
-    </section>
+          <p id="loginMessage" class="helper-text" style="margin-top: 14px; display:none;"></p>
+        </form>
+      </div>
+    </main>
 
-    <section class="card info-card">
-      <h2 class="card-title-sm">What happens next?</h2>
-      <ul class="info-list">
-        <li>The event is saved into your <code>events</code> table in Supabase.</li>
-        <li>It will appear on the public <strong>Events</strong> page if “Show on public page” is checked.</li>
-        <li>You can attach slots (volunteers, food, etc.) from your <strong>Manage Events</strong> screen.</li>
-      </ul>
-    </section>
-  </main>
-
-  <!-- Wire up Supabase + admin logic -->
-  <script type="module" src="./admin.js"></script>
-</body>
+    <script type="module" src="admin.js"></script>
+  </body>
 </html>
