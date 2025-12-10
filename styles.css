@@ -961,3 +961,46 @@ input, textarea, select {
   font-size: 14px;
   background: white;
 }
+/* LIGHTENED CARDS FOR ADMIN UI */
+.card {
+  background: #ffffff;              /* clean white card */
+  border: 1px solid #d1d5db;        /* subtle border */
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  color: #1e293b;
+}
+
+/* CARD TITLES */
+.card h2, .card h3, .card-title {
+  color: #1e293b !important;
+}
+
+/* INPUT FIELDS */
+.card input,
+.card textarea,
+.card select {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+/* LABELS */
+.card label {
+  color: #334155;
+}
+
+/* RIGHT SIDEBAR CARD */
+.card-secondary {
+  background: #f8fafc;             /* light gray-blue */
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 28px;
+  color: #1e293b;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* BULLET POINTS IN SIDEBAR */
+.card-secondary li {
+  color: #1e293b;
+}
