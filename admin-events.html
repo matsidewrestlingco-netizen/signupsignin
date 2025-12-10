@@ -2,44 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin – Manage Events</title>
+  <title>signUPsignIN – Admin Events</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body class="page-admin">
-
+<body>
+  
   <!-- STANDARD ADMIN HEADER -->
-  <header class="top-bar">
-    <div class="top-bar-inner">
-      <div class="brand">
-        <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
-        <span class="site-title">Admin Panel</span>
-      </div>
-
-        <nav class="top-nav">
-          <a href="admin.html">Create Event</a>
-          <a href="admin-events.html" class="active">Manage Events</a>
-          <a href="admin-reports.html">Reports</a>
-          <a href="index.html">Public Events</a>
-        </nav>
-      </div>
-  </header>
-
-  <!-- MAIN WRAPPER -->
-  <main class="page-main">
-    <div class="page-container">
-
-      <h1 class="page-title">Manage Events</h1>
-      <p class="page-subtitle">View, edit, and manage your upcoming events.</p>
-
-      <div id="eventsList" class="events-list">
-        <!-- Cards populated by admin-events.js -->
-      </div>
-
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
+      <span class="site-title">Admin - Events</span>
     </div>
+
+    <nav class="top-nav">
+      <a href="admin.html">Create Event</a>
+      <a href="admin-events.html">Manage Events</a>
+      <a href="admin-reports.html">Reports</a>
+      <a href="index.html">Public Events</a>
+    </nav>
+  </div>
+</header>
+<main class="layout">
+
+  <main class="page-container">
+    <section class="section-title">
+      <h1>Manage Events</h1>
+      <p>View, edit, and manage all events in your wrestling program.</p>
+    </section>
+
+    <section class="card" style="margin-bottom: 16px;">
+      <div class="filters">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search by event name or location…"
+        />
+
+        <select id="sort-select">
+          <option value="date-asc">Date (earliest first)</option>
+          <option value="date-desc">Date (latest first)</option>
+          <option value="title-asc">Title (A → Z)</option>
+          <option value="title-desc">Title (Z → A)</option>
+        </select>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="toggle-upcoming" checked />
+          <span>Show upcoming only</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="adminEventsList"></section>
   </main>
 
-  <script type="module" src="./admin-events.js"></script>
+  <script type="module" src="admin-events.js"></script>
+</main>
 </body>
 </html>
