@@ -1,44 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>signUPsignIN – Admin Events</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>signUPsignIN – Admin Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-  <body>
-    <!-- UNIFIED HEADER -->
-    <header class="header-bar">
-      <div class="header-left">
-        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-        <div class="header-title">Admin Events Dashboard</div>
+<body>
+  <!-- Full-width admin header -->
+  <header class="header-bar">
+    <div class="header-left">
+      <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+      <div class="header-title">Admin – Events Dashboard</div>
+    </div>
+
+    <nav class="nav-links">
+      <a href="admin-events.html" class="active">Manage Events</a>
+      <a href="admin.html">Create Event</a>
+      <a href="index.html">Public View</a>
+      <a href="#" id="logout-link">Log Out</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <section class="section-title">
+      <h1>Manage Events</h1>
+      <p>View, edit, and manage all events in your wrestling program.</p>
+    </section>
+
+    <section class="card" style="margin-bottom: 16px;">
+      <div class="filters">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search by event name or location…"
+        />
+
+        <select id="sort-select">
+          <option value="date-asc">Date (earliest first)</option>
+          <option value="date-desc">Date (latest first)</option>
+          <option value="title-asc">Title (A → Z)</option>
+          <option value="title-desc">Title (Z → A)</option>
+        </select>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="toggle-upcoming" checked />
+          <span>Show upcoming only</span>
+        </label>
       </div>
+    </section>
 
-      <nav class="nav-links">
-        <a href="index.html">Public Events</a>
-        <a href="admin-events.html" class="active">Manage Events</a>
-        <a href="admin.html">Create Event</a>
-        <a href="#" id="logout-link">Log Out</a>
-      </nav>
-    </header>
+    <section id="adminEventsList"></section>
+  </main>
 
-    <!-- MAIN CONTENT -->
-    <main class="page-container">
-
-      <section class="section-title">
-        <h1>Manage Events</h1>
-        <p>View, edit, and manage all events in your wrestling program.</p>
-      </section>
-
-      <!-- EVENT LIST (JS injects content here) -->
-      <section id="adminEventsList"></section>
-
-      <!-- Error / status messages -->
-      <p id="adminEventsMessage" class="helper-text" style="display:none;"></p>
-
-    </main>
-
-    <script type="module" src="admin-events.js"></script>
-  </body>
+  <script type="module" src="admin-events.js"></script>
+</body>
 </html>
