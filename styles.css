@@ -3,7 +3,34 @@
    Clean, consistent design across public + admin pages
    Light theme + blue accents
 ------------------------------------------------------- */
+/* EMERGENCY FIX — override broken rules */
 
+/* Force header back to blue */
+.app-header {
+  background: #1f3c88 !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Prevent any background images from leaking into body */
+body {
+  background-image: none !important;
+  background-size: initial !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Ensure the logo stays small */
+.brand-logo {
+  width: 42px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* Kill any huge background watermark image that may have been injected */
+.app-shell::before,
+.app-main::before {
+  content: none !important;
+}
 /* -------------------
    COLOR VARIABLES
 ------------------- */
