@@ -1,3 +1,19 @@
+import { requireAdmin, logoutAdmin } from "./auth.js";
+
+// Require login
+requireAdmin();
+
+// Enable log out
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutAdmin();
+    });
+  }
+});
+
 // admin-edit-event.js
 import { supabase } from "./supabaseClient.js";
 
