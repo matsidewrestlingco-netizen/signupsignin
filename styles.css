@@ -1,1006 +1,251 @@
-/* ============================================================
-   GLOBAL BASE STYLES (applies to all pages)
-   ============================================================ */
+/* -------------------------------------------------------
+   signUPsignIN — Unified Global Styles
+   Clean, consistent design across public + admin pages
+   Light theme + blue accents
+------------------------------------------------------- */
 
-* {
-  box-sizing: border-box;
+/* -------------------
+   COLOR VARIABLES
+------------------- */
+:root {
+  --blue-primary: #243c8f;         /* Matside brand blue */
+  --blue-light: #3f5cd8;
+  --blue-faint: #eaf0ff;
+
+  --gray-100: #f5f6fa;
+  --gray-200: #e6e8ee;
+  --gray-300: #d1d5db;
+  --gray-600: #4b5563;
+  --gray-800: #1f2937;
+
+  --text-main: #1b1b1b;
+  --text-muted: #4f586a;
+
+  --white: #ffffff;
 }
 
+/* -------------------
+   GLOBAL RESET
+------------------- */
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f3f4f6;
-  color: #111827;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background-color: var(--gray-100);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
 }
 
-header {
-  background: #1e3a8a;
-  color: white;
-  padding: 16px 24px;
-}
-
-header h1 {
+h1, h2, h3, h4 {
   margin: 0;
-  font-size: 22px;
+  font-weight: 600;
 }
 
-main {
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 0 16px;
+p {
+  margin: 0;
+  color: var(--text-muted);
 }
 
-/* PUBLIC CARD STYLE (white cards) */
-.card {
-  background: white;
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.card h2,
-.card h3 {
-  margin-top: 0;
-  margin-bottom: 4px;
-}
-
-.card p {
-  margin: 4px 0;
-  color: #4b5563;
-}
-
-.button-link,
-button {
-  background: #2563eb;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  display: inline-block;
+a {
   text-decoration: none;
-  border: none;
+  color: var(--blue-primary);
+}
+
+button {
   cursor: pointer;
-  font-size: 14px;
+  font-family: inherit;
 }
 
-.button-link:hover,
-button:hover {
-  background: #1d4ed8;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.badge {
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-}
-
-.badge-full {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.badge-open {
-  background: #dcfce7;
-  color: #166534;
-}
-
-/* ============================================================
-   ADMIN MODE — DARK THEME (ONLY WHEN BODY HAS .page-admin)
-   ============================================================ */
-
-.page-admin {
-  background: #0b1020;
-  color: #f3f4f6;
-}
-
-/* Top bar */
-.top-bar {
-  background: #0f172a;
-  border-bottom: 1px solid #1f2937;
-}
-
-.top-bar-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
+/* -------------------
+   HEADER BAR
+------------------- */
+.header-bar {
+  background: var(--blue-primary);
+  padding: 1rem 2rem;
+  color: var(--white);
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
-.brand {
+.header-left img {
+  height: 40px;
+}
+
+.nav-links {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  background: #dc2626;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #f9fafb;
-}
-
-.brand-text {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.top-nav a {
-  color: #9ca3af;
-  font-size: 0.85rem;
-  margin-left: 0.75rem;
-  text-decoration: none;
-}
-
-.top-nav a:hover {
-  color: #e5e7eb;
-}
-
-.top-nav a.active {
-  color: #f97316;
-}
-
-/* Admin layout wrapper */
-.main-wrap {
-  max-width: 960px;
-  margin: 1.5rem auto 2rem;
-  padding: 0 1rem 2rem;
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   gap: 1.5rem;
 }
 
-@media (max-width: 900px) {
-  .main-wrap {
-    grid-template-columns: 1fr;
-  }
+.nav-links a {
+  color: var(--white);
+  font-weight: 500;
+  opacity: 0.85;
+}
+.nav-links a:hover {
+  opacity: 1;
 }
 
-/* ADMIN CARD STYLE (override public card) */
-.page-admin .card {
-  background: #020617;
-  border: 1px solid #1f2937;
-  color: #f3f4f6;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+/* -------------------
+   PAGE CONTAINER
+------------------- */
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
-.page-admin .card p {
-  color: #cbd5e1;
+/* -------------------
+   CARD COMPONENT
+------------------- */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
-/* Titles */
 .card-title {
-  font-size: 1.4rem;
-  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
-.card-title-sm {
-  font-size: 1.1rem;
-  margin: 0 0 0.5rem;
+/* -------------------
+   FORM ELEMENTS
+------------------- */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 0.35rem;
+  box-sizing: border-box;
 }
 
-.card-subtitle {
-  margin: 0 0 1.25rem;
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+label {
   font-size: 0.9rem;
-  color: #9ca3af;
+  font-weight: 500;
+  color: var(--text-main);
 }
 
-/* FORM ELEMENTS — DARK */
-.page-admin input,
-.page-admin textarea {
-  background: #0f172a;
-  border: 1px solid #334155;
-  color: #f3f4f6;
-}
-
-.page-admin input:focus,
-.page-admin textarea:focus {
-  outline: 2px solid #f97316;
-  outline-offset: 1px;
-}
-
-/* Form structure */
-.form-grid {
+.form-row {
   display: flex;
-  flex-direction: column;
   gap: 1rem;
 }
 
-.form-field label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.85rem;
+.form-col {
+  flex: 1;
 }
 
-.form-field-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.form-field-inline > div {
-  flex: 1 1 0;
-}
-
-.checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-}
-
-.req {
-  color: #f97316;
-}
-
-.form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-/* Buttons in admin */
-.btn-primary {
-  background: #f97316;
-  color: #0b1020;
-  font-weight: 600;
-  border: none;
-  padding: 0.45rem 0.9rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #fb923c;
-}
-
-.btn-ghost {
-  background: transparent;
-  border: 1px solid #4b5563;
-  color: #e5e7eb;
-  padding: 0.45rem 0.9rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.btn-ghost:hover {
-  background: #111827;
-}
-
-/* Status messages */
-.status-message {
-  margin-top: 0.75rem;
-  font-size: 0.85rem;
-  min-height: 1.2em;
-}
-
-.status-info {
-  color: #e5e7eb;
-}
-
-.status-success {
-  color: #4ade80;
-}
-
-.status-error {
-  color: #f87171;
-}
-
-/* ============================================================
-   PUBLIC EVENT PAGE – CLEAN LAYOUT
-   ============================================================ */
-
-.page-event {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-.event-main {
-  max-width: 960px;
-  margin: 24px auto 32px;
-  padding: 0 16px;
-}
-
-.event-header-card {
-  margin-bottom: 20px;
-}
-
-.event-breadcrumb {
-  margin: 0 0 4px;
-  font-size: 0.85rem;
-}
-
-.event-breadcrumb a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-.event-breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-.event-title {
-  margin: 0 0 4px;
-  font-size: 1.5rem;
-}
-
-.event-meta {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #4b5563;
-}
-
-.event-description {
-  margin-top: 8px;
-  font-size: 0.95rem;
-  color: #111827;
-}
-
-/* Slots */
-
-.slots-section {
-  margin-bottom: 24px;
-}
-
-.slots-heading {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
-}
-
-.slot-category-group {
-  margin-bottom: 18px;
-}
-
-.slot-category-heading {
-  font-size: 0.95rem;
-  color: #4b5563;
-  margin: 0 0 6px;
-  font-weight: 600;
-}
-
-.slot-card-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
-}
-
-@media (min-width: 700px) {
-  .slot-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.slot-card {
-  padding: 12px 14px;
-}
-
-.slot-card-title {
-  margin: 0 0 4px;
-  font-size: 0.98rem;
-  font-weight: 600;
-}
-
-.slot-card-meta {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #6b7280;
-}
-
-.slot-card-desc {
-  margin: 6px 0 0;
-  font-size: 0.85rem;
-  color: #374151;
-}
-
-.slot-card-stats {
-  margin: 0;
-  font-size: 0.82rem;
-  color: #4b5563;
-}
-
-.slot-card-footer {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.slot-card-badge {
+/* -------------------
+   BUTTONS
+------------------- */
+.btn {
   display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  margin-left: 6px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  border: none;
 }
 
-/* Override default badges to look consistent here */
-.slot-card-badge.badge-open {
-  background: #dcfce7;
+/* Primary */
+.btn-primary {
+  background: var(--blue-primary);
+  color: var(--white);
+}
+.btn-primary:hover {
+  background: var(--blue-light);
+}
+
+/* Secondary */
+.btn-secondary {
+  background: var(--gray-200);
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  background: var(--gray-300);
+}
+
+/* Danger */
+.btn-danger {
+  background: #c62828;
+  color: white;
+}
+.btn-danger:hover {
+  background: #a71f1f;
+}
+
+/* -------------------
+   LISTS (Events, Slots)
+------------------- */
+.list-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.list-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.list-card small {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* -------------------
+   SLOT GROUP HEADERS
+------------------- */
+.slot-group-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* -------------------
+   CHECK-IN BADGE
+------------------- */
+.badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-success {
+  background: #e1f5e4;
   color: #166534;
 }
 
-.slot-card-badge.badge-full {
-  background: #fee2e2;
-  color: #b91c1c;
+.badge-warning {
+  background: #fff4d6;
+  color: #92400e;
 }
 
-.slot-btn-full {
-  background: #9ca3af;
-  cursor: not-allowed;
-}
-
-/* Signup section */
-
-.signup-card {
-  margin-top: 8px;
-}
-
-.signup-title {
-  margin: 0 0 4px;
-  font-size: 1.1rem;
-}
-
-.signup-subtitle {
-  margin: 0 0 8px;
-  font-size: 0.87rem;
-  color: #4b5563;
-}
-
-.signup-selected {
-  margin: 0 0 10px;
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
-.signup-selected-active {
-  color: #111827;
-  font-weight: 600;
-}
-
-/* ============================================================
-   ADMIN EVENTS DASHBOARD (Hybrid Style)
-   ============================================================ */
-
-.dashboard-main {
-  max-width: 1000px;
-  margin: 24px auto;
-  padding: 0 16px;
-}
-
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 1.6rem;
-}
-
-.dashboard-subtitle {
-  margin: 4px 0 16px;
-  color: #cbd5e1;
-}
-
-.dashboard-filters {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.input {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background: #0f172a;
-  color: #f3f4f6;
-  min-width: 180px;
-}
-
-.search-input {
-  flex: 1;
-}
-
-.toggle-container {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #e2e8f0;
-}
-
-.events-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-}
-
-@media (min-width: 700px) {
-  .events-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.admin-event-card {
-  background: #ffffff;
-  color: #111827;
-}
-
-.admin-event-header {
-  margin-bottom: 10px;
-}
-
-.admin-event-title {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.admin-event-datetime {
-  font-size: 0.85rem;
-  color: #4b5563;
-  margin: 2px 0;
-}
-
-.admin-event-location {
-  font-size: 0.85rem;
-  color: #6b7280;
-}
-
-.admin-event-stats {
-  display: flex;
-  justify-content: space-between;
-  margin: 12px 0;
-  font-size: 0.85rem;
-}
-
-.admin-event-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.admin-btn {
-  flex: 1;
-  text-align: center;
-}
-
-/* Header Layout */
-.site-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 24px;
-  background: #213B8D;   /* Your brand blue */
-  color: white;
-}
-
-/* Logo */
-.site-logo {
-  height: 100px;
-  width: auto;
-}
-
-/* Title */
-.site-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.slot-category-title {
-  margin-top: 24px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.slot-card {
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-}
-
-.slot-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.slot-name {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.slot-time {
-  color: #555;
-  font-size: 14px;
-}
-
-.slot-desc {
-  margin-top: 4px;
-  color: #444;
-  font-size: 14px;
-}
-
-.slot-counts {
-  text-align: right;
-}
-
-.full {
-  color: red;
-  font-weight: bold;
-}
-.remaining {
-  color: green;
-  font-weight: bold;
-}
-
-.sign-btn {
-  margin-top: 12px;
-  background: #1e40af;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.signup-form {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.signup-form input,
-.signup-form textarea {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.hidden {
-  display: none;
-}
-
-.form-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.confirm-btn {
-  background: green;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-}
-
-.cancel-btn {
-  background: #ddd;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-}
-
-/* ============================================
-   ADMIN THEME REFRESH (MATSIDE BLUE)
-   ============================================ */
-
-.page-admin {
-  background: #f3f4f6; /* Light gray */
-  color: #1f2937; /* Dark text */
-  min-height: 100vh;
-}
-
-/* Top Bar */
-.top-bar {
-  background: #1e40af; /* Matside Blue */
-  padding: 12px 0;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-}
-
-.top-bar-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 900px;
-  margin: auto;
-  padding: 0 20px;
-}
-
-.brand-logo {
-  height: 32px;
-  margin-right: 10px;
-}
-
-.top-nav a {
-  color: #e5e7eb;
-  margin-left: 16px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.top-nav a:hover {
-  color: #ffffff;
-}
-
-/* Card */
-.card {
-  background: #ffffff; /* Clean white card surface */
-  border: 1px solid #d1d5db; /* Subtle border */
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-/* Slot Cards */
-.slot-card {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  padding: 16px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
-
-/* Buttons */
-.btn-primary {
-  background: #1e40af;
-  padding: 10px 16px;
-  border-radius: 6px;
-  color: white;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #3b82f6;
-}
-
-.btn-secondary {
-  background: #e5e7eb;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background: #d1d5db;
-}
-
-/* Form Styles */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-  margin-top: 14px;
-}
-
-.form-field label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: #1f2937;
-}
-
-.form-field input,
-.form-field select,
-.form-field textarea {
-  width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 8px;
-  background: #ffffff;
-}
-
-.form-field input:focus,
-.form-field textarea:focus,
-.form-field select:focus {
-  outline: 2px solid #3b82f6;
-}
-
-.full-width {
-  grid-column: span 2;
-}
-
-.section-title,
-.card-title,
-.card-title-sm {
-  margin-bottom: 12px;
-  color: #1f2937;
-  font-weight: 700;
-}
-
-/* PAGE BACKGROUND */
-body {
-  background: #f5f6fa !important;
-  color: #1f2937;
-  font-family: system-ui, sans-serif;
-}
-
-/* HEADER BAR */
-.admin-header {
-  background: white;
-  border-bottom: 1px solid #d1d5db;
-  padding: 16px 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-}
-
-/* SIDEBAR */
-.admin-sidebar {
-  width: 240px;
-  background: white;
-  border-right: 1px solid #d1d5db;
-  padding: 20px;
-}
-
-.admin-sidebar a {
-  display: block;
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #1f2937;
-  text-decoration: none;
-}
-
-.admin-sidebar a:hover {
-  background: #f1f5f9;
-}
-
-.admin-sidebar a.active {
-  background: #1e40af;
-  color: white;
-}
-
-/* MAIN CONTENT */
-.admin-content {
-  padding: 32px;
-}
-
-/* CARDS */
-.card {
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-/* TABLE IMPROVEMENTS */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-th {
-  background: #f8fafc;
-  padding: 12px;
-  text-align: left;
-  font-weight: 700;
-  color: #1f2937;
-  border-bottom: 1px solid #d1d5db;
-}
-
-td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-tr:hover {
-  background: #f1f5f9;
-}
-
-/* BUTTONS */
-.btn-primary {
-  background: #1e40af;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  background: #3b82f6;
-}
-
-.btn-secondary {
-  background: #e5e7eb;
-  color: #1f2937;
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background: #d1d5db;
-}
-
-.btn-delete {
-  background: #dc2626;
-  color: white;
-}
-
-.btn-delete:hover {
-  background: #b91c1c;
-}
-
-/* FORMS */
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  background: white;
-}
-/* LIGHTENED CARDS FOR ADMIN UI */
-.card {
-  background: #ffffff;              /* clean white card */
-  border: 1px solid #d1d5db;        /* subtle border */
-  border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  color: #1e293b;
-}
-
-/* CARD TITLES */
-.card h2, .card h3, .card-title {
-  color: #1e293b !important;
-}
-
-/* INPUT FIELDS */
-.card input,
-.card textarea,
-.card select {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #1e293b;
-}
-
-/* LABELS */
-.card label {
-  color: #334155;
-}
-
-/* RIGHT SIDEBAR CARD */
-.card-secondary {
-  background: #f8fafc;             /* light gray-blue */
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  padding: 28px;
-  color: #1e293b;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-/* BULLET POINTS IN SIDEBAR */
-.card-secondary li {
-  color: #1e293b;
+.badge-info {
+  background: var(--blue-faint);
+  color: var(--blue-primary);
 }
