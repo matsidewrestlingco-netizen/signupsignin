@@ -4,47 +4,37 @@
     <meta charset="UTF-8" />
     <title>signUPsignIN – Events</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Styles -->
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <div class="app-shell">
+    <!-- UNIFIED HEADER (Option A) -->
+    <header class="header-bar">
+      <div class="header-left">
+        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+        <div class="header-title">signUPsignIN</div>
+      </div>
 
-      <!-- Top bar / brand -->
-<header class="header-bar">
-  <div class="header-left">
-    <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-  </div>
+      <nav class="nav-links">
+        <a href="index.html" class="active">Events</a>
+        <a href="admin-events.html">Admin</a>
+      </nav>
+    </header>
 
-  <nav class="nav-links">
-    <a href="index.html" class="active">Events</a>
-    <a href="admin-events.html">Admin</a>
-  </nav>
-</header>
+    <!-- MAIN CONTENT -->
+    <main class="page-container">
+      <section class="section-title">
+        <h1>Available Events</h1>
+        <p>Select an event to view and sign up for available volunteer shifts or donation slots.</p>
+      </section>
 
-      <!-- Page content -->
-      <main class="app-main">
-        <section class="page-header">
-          <h1 class="page-title">Events</h1>
-          <p class="page-subtitle">
-            Choose an event to view volunteer shifts, food donations, and other
-            signup slots.
-          </p>
-        </section>
+      <!-- EVENT CARDS WILL RENDER HERE -->
+      <section id="eventsList"></section>
 
-        <!-- Event list rendered by app.js -->
-        <section id="eventsList" class="card-list">
-          <!-- JS will inject event cards here -->
-        </section>
+      <!-- Error / empty state -->
+      <p id="eventsMessage" class="helper-text" style="display:none;"></p>
+    </main>
 
-        <!-- Error / empty states (optional, JS can toggle visibility) -->
-        <p id="eventsMessage" class="helper-text" style="display:none;"></p>
-      </main>
-    </div>
-
-    <!-- Logic -->
     <script type="module" src="app.js"></script>
   </body>
 </html>
