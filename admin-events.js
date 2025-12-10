@@ -5,8 +5,17 @@ import { requireAdmin, logoutAdmin } from "./auth.js";
 // Enforce admin login
 requireAdmin();
 
-// Wire up logout + then load events
+// Module-scoped variables for DOM + data
+let eventsContainer;
+let searchInput;
+let sortSelect;
+let toggleUpcoming;
+
+let allEvents = [];
+let slotStats = {};
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Wire logout
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
     logoutLink.addEventListener("click", (e) => {
@@ -15,17 +24,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Grab DOM elements
+  eventsContainer = document.getElementById("adminEventsList");
+  searchInput = document.getElementById("search-input");
+  sortSelect = document.getElementById("sort-select");
+  toggleUpcoming = document.getElementById("toggle-upcoming");
+
+  // Event listeners
+  searchInput?.addEventListener("input", renderEvents);
+  sortSelect?.addEventListener("change", renderEvents);
+  toggleUpcoming?.addEventListener("change", renderEvents);
+
+  eventsContainer.addEventListener("click", handleEventsContainerClick);
+
+  // Load data
   loadEvents();
 });
-
-/* DOM elements */
-const eventsContainer = document.getElementById("adminEventsList");
-const searchInput = document.getElementById("search-input");
-const sortSelect = document.getElementById("sort-select");
-const toggleUpcoming = document.getElementById("toggle-upcoming");
-
-let allEvents = [];
-let slotStats = {};
 
 async function loadEvents() {
   eventsContainer.innerHTML = "<p>Loading events…</p>";
@@ -74,6 +88,8 @@ async function loadEvents() {
 }
 
 function renderEvents() {
+  if (!eventsContainer) return;
+
   let events = [...allEvents];
   const now = new Date();
 
@@ -92,8 +108,10 @@ function renderEvents() {
 
   const sort = sortSelect?.value;
   events.sort((a, b) => {
-    if (sort === "date-asc") return new Date(a.start_time) - new Date(b.start_time);
-    if (sort === "date-desc") return new Date(b.start_time) - new Date(a.start_time);
+    if (sort === "date-asc")
+      return new Date(a.start_time) - new Date(b.start_time);
+    if (sort === "date-desc")
+      return new Date(b.start_time) - new Date(a.start_time);
     if (sort === "title-asc") return a.title.localeCompare(b.title);
     if (sort === "title-desc") return b.title.localeCompare(a.title);
     return 0;
@@ -140,31 +158,22 @@ function renderEvents() {
   });
 }
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleString([], {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
-searchInput?.addEventListener("input", renderEvents);
-sortSelect?.addEventListener("change", renderEvents);
-toggleUpcoming?.addEventListener("change", renderEvents);
-
-eventsContainer.addEventListener("click", async (e) => {
+function handleEventsContainerClick(e) {
   const btn = e.target.closest(".delete-event-btn");
   if (!btn) return;
 
   const eventId = btn.dataset.eventId;
+  if (!eventId) return;
 
   const ok = confirm(
     "Are you sure you want to delete this event? It will disappear from public view."
   );
   if (!ok) return;
 
+  deleteEvent(eventId);
+}
+
+async function deleteEvent(eventId) {
   const { error } = await supabase
     .from("events")
     .update({ deleted_at: new Date().toISOString() })
@@ -177,4 +186,14 @@ eventsContainer.addEventListener("click", async (e) => {
   }
 
   await loadEvents();
-});
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleString([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
