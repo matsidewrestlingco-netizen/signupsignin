@@ -1,114 +1,43 @@
 /* ---------------------------------------------------------
-   GLOBAL THEME — SIGNUPSIGNIN LIGHT MODE
-   --------------------------------------------------------- */
-
-:root {
-  --brand-blue: #243c7b;
-  --brand-blue-light: #3150a5;
-  --brand-gray-light: #f5f6fa;
-  --brand-gray-mid: #e6e8ef;
-  --brand-text-dark: #1a1a1a;
-  --brand-text-muted: #555;
-  --card-bg: #ffffff;
-  --card-border: #d9d9d9;
-}
-
-/* ---------------------------------------------------------
-   BASE RESET
-   --------------------------------------------------------- */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+   GLOBAL DEFAULTS
+--------------------------------------------------------- */
 
 body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    sans-serif;
-  background: var(--brand-gray-light);
-  color: var(--brand-text-dark);
-  line-height: 1.4;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f6fa;
+  color: #222;
 }
 
-/* ---------------------------------------------------------
-   HEADER BAR (Public + Admin)
-   --------------------------------------------------------- */
-
-.header-bar {
-  width: 100%;
-  background: var(--brand-blue);
-  color: white;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+h1, h2, h3 {
+  margin-top: 0;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-logo {
-  height: 46px;             /* THIS FIXES YOUR TINY LOGO ISSUE */
-  width: auto;
-}
-
-.header-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.nav-links {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.nav-links a {
-  color: white;
+a {
   text-decoration: none;
-  font-size: 1rem;
-  opacity: 0.9;
 }
 
-.nav-links a:hover {
-  opacity: 1;
-  text-decoration: underline;
+input, select, textarea {
+  font-size: 1rem;
 }
 
 /* ---------------------------------------------------------
-   PAGE LAYOUT CONTAINERS
-   --------------------------------------------------------- */
-
-.page-container {
-  max-width: 1200px;
-  margin: 32px auto;
-  padding: 0 20px;
-}
-
-.section-title {
-  margin-bottom: 20px;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-/* --- ADMIN HEADER (standardized across all admin pages) --- */
+   TOP BAR — (STANDARDIZED ACROSS ALL ADMIN PAGES)
+   — Matches admin-events.html exactly
+--------------------------------------------------------- */
 
 .top-bar {
-  background: #243c7c;
-  color: #fff;
+  background: #243c7c;   /* deep blue */
+  color: #ffffff;
   padding: 14px 0;
   width: 100%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 
 .top-bar-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px; /* adds breathing room on the left/right */
+  padding: 0 24px;        /* THIS FIXES THE “TOO CLOSE TO LEFT EDGE” ISSUE */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,25 +46,24 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px; /* previously too tight */
+  gap: 14px;              /* FIXES CRAMPED LOGO + TITLE */
 }
 
 .site-logo {
-  height: 38px; /* slightly larger but not overpowering */
+  height: 38px;
   width: auto;
 }
 
 .site-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
-  margin: 0;
+  color: #ffffff;
 }
 
+/* --- NAV LINKS --- */
 .top-nav a {
   color: #ffffff;
-  text-decoration: none;
-  margin-left: 26px;
+  margin-left: 26px;      /* MATCHES OTHER ADMIN PAGES */
   font-weight: 500;
 }
 
@@ -143,150 +71,131 @@ body {
   text-decoration: underline;
 }
 
-.top-nav .active {
+.top-nav a.active {
   text-decoration: underline;
 }
 
 /* ---------------------------------------------------------
+   ADMIN PAGE CONTAINERS
+--------------------------------------------------------- */
+
+.page-admin .content-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+/* ---------------------------------------------------------
    CARDS
-   --------------------------------------------------------- */
+--------------------------------------------------------- */
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 18px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-.card h2,
-.card h3 {
-  margin-bottom: 10px;
-}
-
-/* Fix white-on-white issue for "New Slot" or admin cards */
-.card.admin-card {
   background: #ffffff;
-  border: 1px solid #cdd3df;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.card:hover {
-  background: #fafbff;
+.card h2 {
+  margin-bottom: 12px;
 }
 
 /* ---------------------------------------------------------
    BUTTONS
-   --------------------------------------------------------- */
+--------------------------------------------------------- */
 
-.btn {
-  display: inline-block;
-  padding: 10px 18px;
+button, .btn {
+  padding: 10px 16px;
   border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
   border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
 }
 
 .btn-primary {
-  background: var(--brand-blue);
+  background: #243c7c;
   color: white;
 }
 
-.btn-primary:hover {
-  background: var(--brand-blue-light);
-}
-
 .btn-secondary {
-  background: #ddd;
+  background: #dddddd;
+  color: #222;
 }
 
-.btn-secondary:hover {
-  background: #ccc;
+/* Row of buttons */
+.button-row {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 /* ---------------------------------------------------------
    FORMS
-   --------------------------------------------------------- */
+--------------------------------------------------------- */
 
-form label {
+label {
+  display: block;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
-form input,
-form textarea,
-form select {
+input, select, textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #cdd3df;
   border-radius: 6px;
-  margin-top: 6px;
-  margin-bottom: 14px;
-  font-size: 0.95rem;
-  background: white;
-}
-
-form textarea {
-  resize: vertical;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
 }
 
 /* ---------------------------------------------------------
-   EVENT CARDS ON INDEX + ADMIN EVENTS
-   --------------------------------------------------------- */
+   REPORT ROWS (PREVIEW TABLE)
+--------------------------------------------------------- */
+
+.report-row {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 6px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+/* ---------------------------------------------------------
+   PUBLIC EVENTS PAGE UI
+--------------------------------------------------------- */
+
+.events-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
 
 .event-card {
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  border: 1px solid #d9d9d9;
+  background: #fff;
+  padding: 18px;
   margin-bottom: 20px;
-  transition: background 0.2s ease;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.event-card h2 {
+  margin-bottom: 6px;
 }
 
 .event-card:hover {
-  background: #f3f6ff;
+  background: #f1f4ff;
 }
 
 /* ---------------------------------------------------------
-   TABLES (Check-in, slot lists)
-   --------------------------------------------------------- */
+   PUBLIC EVENT PAGE (event.html)
+--------------------------------------------------------- */
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-.table th,
-.table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-}
-
-.table th {
-  background: var(--brand-blue);
-  color: white;
-}
-
-/* ---------------------------------------------------------
-   SPACING HELPERS
-   --------------------------------------------------------- */
-
-.mt-20 {
-  margin-top: 20px;
-}
-
-.mb-20 {
+#slot-list .card {
   margin-bottom: 20px;
 }
 
-.hidden {
-  display: none;
-}
-
-/* Slot signup form wrapper */
+/* Signup form inside slot card */
 .signup-form {
   margin-top: 1rem;
   display: flex;
@@ -294,13 +203,11 @@ form textarea {
   gap: 0.75rem;
 }
 
-/* Row for name + email */
 .signup-row {
   display: flex;
   gap: 0.75rem;
 }
 
-/* Inputs */
 .signup-form input,
 .signup-form textarea {
   padding: 10px;
@@ -310,104 +217,36 @@ form textarea {
   flex: 1;
 }
 
-/* Note textarea full width */
-.signup-form textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 60px;
-}
-
-/* Button row */
 .signup-buttons {
   display: flex;
   gap: 0.75rem;
 }
 
-.signup-buttons .btn {
-  min-width: 110px;
-  text-align: center;
-}
-
-.btn-primary {
-  background-color: #243c7c;
-  color: #fff;
-  border: none;
-}
-
-.btn-secondary {
-  background-color: #e2e2e2;
-  color: #000;
-  border: none;
-}
-
-.slot-signups {
-  margin-top: 12px;
-  padding: 10px;
-  background: rgba(0,0,0,0.04);
-  border-radius: 6px;
-}
-
-.signup-list-title {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.signup-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.signup-list li {
-  padding: 2px 0;
-  font-size: 0.95rem;
-}
-
-.no-signups {
+.helper-text {
+  font-size: 0.9rem;
   color: #666;
-  margin-top: 8px;
   font-style: italic;
 }
 
-/* Admin Top Bar */
-.top-bar {
-  background: #243c7c;
-  color: #fff;
-  padding: 12px 0;
+/* ---------------------------------------------------------
+   ADMIN TABLES (used in preview)
+--------------------------------------------------------- */
+
+table.report-table th,
+table.report-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.9rem;
 }
 
-.top-bar-inner {
-  max-width: 1000px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* ---------------------------------------------------------
+   FIXES FOR BLUE BAR ALIGNMENT
+--------------------------------------------------------- */
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.site-logo {
-  height: 36px;
-  width: auto;
-}
-
-.site-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.top-nav a {
-  color: #fff;
-  margin-left: 20px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.top-nav a.active {
-  text-decoration: underline;
+.top-bar,
+.top-bar-inner,
+.brand,
+.top-nav {
+  box-sizing: border-box;
 }
