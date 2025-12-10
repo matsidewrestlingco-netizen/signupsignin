@@ -49,6 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+function logoutAdmin() {
+  // Removes admin session cookie
+  document.cookie = "matside_admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+  alert("You have been logged out.");
+  window.location.href = "admin-login.html";
+}
+    
     msgEl.textContent = "Event created successfully!";
     form.reset();
     document.getElementById("event-public").checked = true;
