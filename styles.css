@@ -316,3 +316,46 @@ form textarea {
   margin-top: 8px;
   font-style: italic;
 }
+
+/* Admin Top Bar */
+.top-bar {
+  background: #243c7c;
+  color: #fff;
+  padding: 12px 0;
+}
+
+.top-bar-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-logo {
+  height: 36px;
+  width: auto;
+}
+
+.site-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.top-nav a {
+  color: #fff;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.top-nav a.active {
+  text-decoration: underline;
+}
