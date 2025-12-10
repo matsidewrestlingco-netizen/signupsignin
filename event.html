@@ -1,28 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>signUPsignIN - Event Details</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body class="page-event">
-  <header>
-     <img src="assetWHITE.svg" alt="signUPsignIN" class="site-logo" />
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>signUPsignIN – Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<main class="container">
-    <h1 id="event-title" class="page-title"></h1>
-    <p id="event-date" class="event-meta"></p>
-    <p id="event-location" class="event-meta"></p>
-    <p id="event-description" class="event-description"></p>
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-    <h2 class="section-title">Available Slots</h2>
-    <div id="slot-list"></div>
+  <body>
+    <div class="app-shell">
 
-    <p id="message" class="message"></p>
-  </main>
+      <!-- Top bar / brand -->
+      <header class="app-header">
+        <div class="brand">
+          <img
+            src="assetWHITE.svg"
+            alt="signUPsignIN logo"
+            class="brand-logo"
+          />
+          <div class="brand-text">
+            <span class="brand-name">signUPsignIN</span>
+            <span class="brand-tagline">Event Details</span>
+          </div>
+        </div>
 
-  <script type="module" src="event.js"></script>
-</body>
+        <nav class="app-nav">
+          <a href="index.html" class="nav-link">Events</a>
+          <a href="admin.html" class="nav-link">Admin</a>
+        </nav>
+      </header>
+
+      <!-- Page content -->
+      <main class="app-main">
+        <section class="page-header">
+          <h1 class="page-title" id="eventTitle">
+            Event
+          </h1>
+          <p class="page-subtitle" id="eventSubtitle">
+            Loading event details…
+          </p>
+        </section>
+
+        <!-- Event + slots rendered by app.js -->
+        <section id="eventDetails" class="event-layout">
+          <!-- JS will inject the event card and slot cards here -->
+        </section>
+
+        <p id="eventMessage" class="helper-text" style="display:none;"></p>
+      </main>
+    </div>
+
+    <!-- Logic -->
+    <script type="module" src="app.js"></script>
+  </body>
 </html>
