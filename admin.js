@@ -3,11 +3,11 @@
 import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
 
-// Enforce admin login
+// Enforce admin login immediately
 requireAdmin();
 
-// Wire up logout
 document.addEventListener("DOMContentLoaded", () => {
+  // Wire logout
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
     logoutLink.addEventListener("click", (e) => {
