@@ -82,6 +82,21 @@ input, select, textarea {
   text-decoration: underline;
 }
 
+.logout-btn {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 12px;
+}
+
+.logout-btn:hover {
+  background: #c9302c;
+}
+
 /* ---------------------------------------------------------
    ADMIN PAGE CONTAINERS
 --------------------------------------------------------- */
