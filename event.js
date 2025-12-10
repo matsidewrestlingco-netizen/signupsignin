@@ -53,7 +53,7 @@ async function loadSlots() {
 
   const { data, error } = await supabase
     .from("slots")
-    .select("*, signups(id)")
+    .select("*, signups(full_name)")
     .eq("event_id", eventId)
     .order("start_time", { ascending: true });
 
@@ -75,21 +75,40 @@ function renderSlots(slots) {
   slotListEl.innerHTML = "";
 
   slots.forEach((slot) => {
-    const remaining = slot.quantity_total - (slot.signups?.length || 0);
+    const filled = slot.signups?.length || 0;
+    const remaining = slot.quantity_total - filled;
 
     const card = document.createElement("article");
     card.className = "card";
+
+    // Build the signup name list
+    const signupNamesHTML =
+      filled > 0
+        ? `
+        <div class="signup-list">
+          <strong>Signed Up:</strong>
+          <ul>
+            ${slot.signups
+              .map((s) => `<li>${s.full_name}</li>`)
+              .join("")}
+          </ul>
+        </div>`
+        : `<p class="helper-text">No signups yet.</p>`;
 
     card.innerHTML = `
       <h3>${slot.name}</h3>
 
       ${
         slot.start_time && slot.end_time
-          ? `<p><strong>${formatTime(slot.start_time)} – ${formatTime(slot.end_time)}</strong></p>`
+          ? `<p><strong>${formatTime(slot.start_time)} – ${formatTime(
+              slot.end_time
+            )}</strong></p>`
           : ""
       }
 
       <p><strong>${remaining}</strong> spots remaining</p>
+
+      ${signupNamesHTML}
 
       ${
         remaining > 0
