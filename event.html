@@ -4,55 +4,36 @@
     <meta charset="UTF-8" />
     <title>signUPsignIN – Event</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Styles -->
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <div class="app-shell">
+    <!-- UNIFIED HEADER (Option A) -->
+    <header class="header-bar">
+      <div class="header-left">
+        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+        <div class="header-title">signUPsignIN</div>
+      </div>
 
-      <!-- Top bar / brand -->
-      <header class="app-header">
-        <div class="brand">
-          <img
-            src="assetWHITE.svg"
-            alt="signUPsignIN logo"
-            class="brand-logo"
-          />
-          <div class="brand-text">
-            <span class="brand-name">signUPsignIN</span>
-            <span class="brand-tagline">Event Details</span>
-          </div>
-        </div>
+      <nav class="nav-links">
+        <a href="index.html">Events</a>
+        <a href="admin-events.html">Admin</a>
+      </nav>
+    </header>
 
-        <nav class="app-nav">
-          <a href="index.html" class="nav-link">Events</a>
-          <a href="admin.html" class="nav-link">Admin</a>
-        </nav>
-      </header>
+    <!-- PAGE CONTENT -->
+    <main class="page-container">
+      <section class="section-title">
+        <h1 id="eventTitle">Event</h1>
+        <p id="eventSubtitle">Loading event details…</p>
+      </section>
 
-      <!-- Page content -->
-      <main class="app-main">
-        <section class="page-header">
-          <h1 class="page-title" id="eventTitle">
-            Event
-          </h1>
-          <p class="page-subtitle" id="eventSubtitle">
-            Loading event details…
-          </p>
-        </section>
+      <!-- EVENT DETAILS + SLOT CARDS (JS injects here) -->
+      <section id="eventDetails"></section>
 
-        <!-- Event + slots rendered by app.js -->
-        <section id="eventDetails" class="event-layout">
-          <!-- JS will inject the event card and slot cards here -->
-        </section>
+      <p id="eventMessage" class="helper-text" style="display:none;"></p>
+    </main>
 
-        <p id="eventMessage" class="helper-text" style="display:none;"></p>
-      </main>
-    </div>
-
-    <!-- Logic -->
     <script type="module" src="app.js"></script>
   </body>
 </html>
