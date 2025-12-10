@@ -1,13 +1,12 @@
 // admin-events.js
 // Admin dashboard: load events, stats, sorting, filtering
-
 import { supabase } from "./supabaseClient.js";
 
 /* --------------------------
    DOM elements
 -------------------------- */
 
-const eventsContainer = document.getElementById("events-container");
+const eventsContainer = document.getElementById("adminEventsList");
 const searchInput = document.getElementById("search-input");
 const sortSelect = document.getElementById("sort-select");
 const toggleUpcoming = document.getElementById("toggle-upcoming");
@@ -23,7 +22,6 @@ let slotStats = {};
 async function loadEvents() {
   eventsContainer.innerHTML = "<p>Loading events…</p>";
 
-  // Fetch events
   const { data: events, error: eventError } = await supabase
     .from("events")
     .select("*")
@@ -35,9 +33,8 @@ async function loadEvents() {
     return;
   }
 
-  allEvents = (events || []).filter(ev => !ev.deleted_at);
+  allEvents = (events || []).filter((ev) => !ev.deleted_at);
 
-  // Fetch slot stats
   const { data: slots, error: slotError } = await supabase
     .from("slots")
     .select("event_id, quantity_total, signups(id)");
@@ -48,7 +45,6 @@ async function loadEvents() {
   }
 
   slotStats = {};
-
   for (const s of slots || []) {
     const eventId = s.event_id;
     const filled = s.signups?.length || 0;
@@ -70,21 +66,18 @@ async function loadEvents() {
 }
 
 /* --------------------------
-   Render event cards
+   Render event cards (FIXED)
 -------------------------- */
 
 function renderEvents() {
   let events = [...allEvents];
-
   const now = new Date();
 
-  // Filter: show upcoming only
-  if (toggleUpcoming.checked) {
+  if (toggleUpcoming?.checked) {
     events = events.filter((ev) => new Date(ev.start_time) >= now);
   }
 
-  // Filter: search
-  const q = searchInput.value.toLowerCase().trim();
+  const q = searchInput?.value.toLowerCase().trim();
   if (q) {
     events = events.filter(
       (ev) =>
@@ -93,25 +86,15 @@ function renderEvents() {
     );
   }
 
-  // Sort
-  const sort = sortSelect.value;
+  const sort = sortSelect?.value;
   events.sort((a, b) => {
-    if (sort === "date-asc") {
-      return new Date(a.start_time) - new Date(b.start_time);
-    }
-    if (sort === "date-desc") {
-      return new Date(b.start_time) - new Date(a.start_time);
-    }
-    if (sort === "title-asc") {
-      return a.title.localeCompare(b.title);
-    }
-    if (sort === "title-desc") {
-      return b.title.localeCompare(a.title);
-    }
+    if (sort === "date-asc") return new Date(a.start_time) - new Date(b.start_time);
+    if (sort === "date-desc") return new Date(b.start_time) - new Date(a.start_time);
+    if (sort === "title-asc") return a.title.localeCompare(b.title);
+    if (sort === "title-desc") return b.title.localeCompare(a.title);
     return 0;
   });
 
-  // Render
   if (!events.length) {
     eventsContainer.innerHTML = "<p>No events match your filters.</p>";
     return;
@@ -130,27 +113,23 @@ function renderEvents() {
       ? Math.round((stats.totalSignups / stats.totalCapacity) * 100)
       : 0;
 
+    // -----------------------------
+    // 🚀 Styled card using your CSS
+    // -----------------------------
     const card = document.createElement("article");
-    card.className = "card admin-event-card";
+    card.className = "card";
 
     card.innerHTML = `
-      <div class="admin-event-header">
-        <h3 class="admin-event-title">${ev.title}</h3>
-        <p class="admin-event-datetime">${formatDate(ev.start_time)}</p>
-        <p class="admin-event-location">${ev.location || ""}</p>
-      </div>
+      <h2>${ev.title}</h2>
+      <p><strong>${formatDate(ev.start_time)}</strong></p>
+      <p>${ev.location || ""}</p>
+      <hr style="margin: 12px 0; border: none; border-top: 1px solid #ddd;">
+      <p><strong>${stats.totalSlots}</strong> slots • <strong>${stats.totalSignups}</strong> signups • ${fillRate}% full</p>
 
-      <div class="admin-event-stats">
-        <p><strong>${stats.totalSlots}</strong> slots</p>
-        <p><strong>${stats.totalSignups}</strong> signups</p>
-        <p><strong>${fillRate}%</strong> full</p>
-      </div>
-
-      <div class="admin-event-actions">
-        <a class="btn-primary admin-btn" href="admin-edit-event.html?id=${ev.id}">Edit</a>
-        <a class="btn-ghost admin-btn" href="admin-signups.html?id=${ev.id}">View Signups</a>
-        <a class="btn-ghost admin-btn" href="event.html?id=${ev.id}" target="_blank">Public View</a>
-        <button class="btn-danger admin-btn delete-event-btn" data-event-id="${ev.id}">
+      <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <a class="btn btn-primary" href="admin-edit-event.html?id=${ev.id}">Edit Event</a>
+        <a class="btn btn-secondary" href="event.html?id=${ev.id}" target="_blank">View Public</a>
+        <button class="btn btn-danger delete-event-btn" data-event-id="${ev.id}">
           Delete
         </button>
       </div>
@@ -165,8 +144,7 @@ function renderEvents() {
 -------------------------- */
 
 function formatDate(iso) {
-  const dt = new Date(iso);
-  return dt.toLocaleString([], {
+  return new Date(iso).toLocaleString([], {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -179,20 +157,23 @@ function formatDate(iso) {
    Handlers
 -------------------------- */
 
-searchInput.addEventListener("input", renderEvents);
-sortSelect.addEventListener("change", renderEvents);
-toggleUpcoming.addEventListener("change", renderEvents);
+searchInput?.addEventListener("input", renderEvents);
+sortSelect?.addEventListener("change", renderEvents);
+toggleUpcoming?.addEventListener("change", renderEvents);
 
 /* --------------------------
    Delete Event (Soft Delete)
 -------------------------- */
+
 eventsContainer.addEventListener("click", async (e) => {
   const btn = e.target.closest(".delete-event-btn");
   if (!btn) return;
 
   const eventId = btn.dataset.eventId;
 
-  const ok = confirm("Are you sure you want to delete this event? This action can be undone, but it will disappear from public view.");
+  const ok = confirm(
+    "Are you sure you want to delete this event? This action can be undone, but it will disappear from public view."
+  );
   if (!ok) return;
 
   const { error } = await supabase
