@@ -1,67 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Matside Admin – Events</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>signUPsignIN – Admin Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body class="page-admin">
-  <!-- Admin Header -->
- <header class="header-bar">
-  <div class="header-left">
-    <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
-    <div class="header-title">Admin Events Dashboard</div>
-  </div>
+  <body>
+    <!-- UNIFIED HEADER -->
+    <header class="header-bar">
+      <div class="header-left">
+        <img src="assetWHITE.svg" alt="signUPsignIN logo" class="brand-logo" />
+        <div class="header-title">Admin Events Dashboard</div>
+      </div>
 
-  <nav class="nav-links">
-    <a href="index.html">Public Events</a>
-    <a href="admin-events.html" class="active">Manage Events</a>
-    <a href="admin.html">Create Event</a>
-  </nav>
-</header>
+      <nav class="nav-links">
+        <a href="index.html">Public Events</a>
+        <a href="admin-events.html" class="active">Manage Events</a>
+        <a href="admin.html">Create Event</a>
+      </nav>
+    </header>
 
-  <!-- Main -->
-  <main class="dashboard-main">
+    <!-- MAIN CONTENT -->
+    <main class="page-container">
 
-    <!-- Dashboard Heading -->
-    <section class="dashboard-header">
-      <h1>Events</h1>
-      <p class="dashboard-subtitle">
-        Manage all scheduled events, view signups, and edit details.
-      </p>
-    </section>
+      <section class="section-title">
+        <h1>Manage Events</h1>
+        <p>View, edit, and manage all events in your wrestling program.</p>
+      </section>
 
-    <!-- Filters -->
-    <section class="dashboard-filters">
-      <input 
-        id="search-input"
-        type="text"
-        class="input search-input"
-        placeholder="Search by event name or location..."
-      />
+      <!-- EVENT LIST (JS injects content here) -->
+      <section id="adminEventsList"></section>
 
-      <select id="sort-select" class="input select-input">
-        <option value="date-asc">Date: Soonest first</option>
-        <option value="date-desc">Date: Latest first</option>
-        <option value="title-asc">Title: A → Z</option>
-        <option value="title-desc">Title: Z → A</option>
-      </select>
+      <!-- Error / status messages -->
+      <p id="adminEventsMessage" class="helper-text" style="display:none;"></p>
 
-      <label class="toggle-container">
-        <input type="checkbox" id="toggle-upcoming" checked />
-        <span>Upcoming only</span>
-      </label>
-    </section>
+    </main>
 
-    <!-- Event Grid -->
-    <section id="events-container" class="events-grid">
-      <!-- Cards inserted dynamically -->
-    </section>
-
-  </main>
-
-  <script type="module" src="./admin-events.js"></script>
-</body>
+    <script type="module" src="admin-events.js"></script>
+  </body>
 </html>
