@@ -1,22 +1,32 @@
+// event.js — Public event detail + slot signup
+
 import { supabase } from "./supabaseClient.js";
 
-// ---------- DOM ELEMENTS ----------
-const titleEl = document.getElementById("eventTitle");
-const dateEl = document.getElementById("eventDate");
-const descEl = document.getElementById("eventDescription");
-const slotListEl = document.getElementById("slotList");
+// Parse event ID from URL
+const url = new URL(window.location.href);
+const eventId = url.searchParams.get("id");
 
-// Extract event ID from URL
-const urlParams = new URLSearchParams(window.location.search);
-const eventId = urlParams.get("id");
+if (!eventId) {
+  alert("Missing event ID.");
+  window.location.href = "index.html";
+}
 
-// ---------- INITIAL LOAD ----------
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadEvent();
-  await loadSlots();
+// DOM elements
+const titleEl = document.getElementById("event-title");
+const dateEl = document.getElementById("event-date");
+const locationEl = document.getElementById("event-location");
+const descriptionEl = document.getElementById("event-description");
+const slotListEl = document.getElementById("slot-list");
+const messageEl = document.getElementById("message");
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadEvent();
+  loadSlots();
 });
 
-// ---------- LOAD EVENT ----------
+// ------------------------
+// Load Event Details
+// ------------------------
 async function loadEvent() {
   const { data, error } = await supabase
     .from("events")
@@ -24,21 +34,24 @@ async function loadEvent() {
     .eq("id", eventId)
     .single();
 
-  if (error) {
-    console.error("Error loading event:", error);
+  if (error || !data) {
+    titleEl.textContent = "Event not found.";
     return;
   }
 
   titleEl.textContent = data.title;
   dateEl.textContent = formatDate(data.start_time);
-  descEl.textContent = data.description || "";
+  locationEl.textContent = data.location || "";
+  descriptionEl.textContent = data.description || "";
 }
 
-// ---------- LOAD SLOTS ----------
+// ------------------------
+// Load Available Slots
+// ------------------------
 async function loadSlots() {
   slotListEl.innerHTML = "<p>Loading slots…</p>";
 
-  const { data: slots, error } = await supabase
+  const { data, error } = await supabase
     .from("slots")
     .select("*, signups(full_name)")
     .eq("event_id", eventId)
@@ -50,173 +63,163 @@ async function loadSlots() {
     return;
   }
 
-  if (!slots.length) {
+  if (!data.length) {
     slotListEl.innerHTML = "<p>No slots available.</p>";
     return;
   }
 
-  // Sort alphabetically by category
-  slots.sort((a, b) => a.category.localeCompare(b.category));
-
-  // Render with category headers
-  renderSlots(slots);
+  renderSlots(data);
 }
 
-// ---------- RENDER SLOTS WITH CATEGORY HEADERS ----------
 function renderSlots(slots) {
   slotListEl.innerHTML = "";
 
-  const grouped = {};
+  slots.forEach((slot) => {
+    const filled = slot.signups?.length || 0;
+    const remaining = slot.quantity_total - filled;
 
-  slots.forEach(slot => {
-    if (!grouped[slot.category]) grouped[slot.category] = [];
-    grouped[slot.category].push(slot);
-  });
+    const card = document.createElement("article");
+    card.className = "card";
 
-  let html = "";
+    // Build the signup name list
+    const signupNamesHTML =
+      filled > 0
+        ? `
+        <div class="signup-list">
+          <strong>Signed Up:</strong>
+          <ul>
+            ${slot.signups
+              .map((s) => `<li>${s.full_name}</li>`)
+              .join("")}
+          </ul>
+        </div>`
+        : `<p class="helper-text">No signups yet.</p>`;
 
-  Object.keys(grouped).forEach(category => {
-    html += `<h2 class="slot-category-header">${category}</h2>`;
+    card.innerHTML = `
+      <h3>${slot.name}</h3>
 
-    grouped[category].forEach(slot => {
-      const filled = slot.signups?.length || 0;
-      const remaining = slot.quantity_total - filled;
+      ${
+        slot.start_time && slot.end_time
+          ? `<p><strong>${formatTime(slot.start_time)} – ${formatTime(
+              slot.end_time
+            )}</strong></p>`
+          : ""
+      }
 
-      const signupNamesHTML =
-        filled > 0
+      <p><strong>${remaining}</strong> spots remaining</p>
+
+      ${signupNamesHTML}
+
+      ${
+        remaining > 0
           ? `
-          <div class="signup-list">
-            <strong>Signed Up:</strong>
-            <ul>
-              ${slot.signups.map(s => `<li>${s.full_name}</li>`).join("")}
-            </ul>
-          </div>`
-          : `<p class="helper-text">No signups yet.</p>`;
+            <button class="btn btn-primary signup-btn" data-slot="${slot.id}">
+              Sign Up
+            </button>
 
-      html += `
-        <article class="card">
-          <h3>${slot.name}</h3>
+            <div class="signup-form" id="form-${slot.id}" style="display:none;">
 
-          ${
-            slot.start_time && slot.end_time
-              ? `<p><strong>${formatTime(slot.start_time)} – ${formatTime(slot.end_time)}</strong></p>`
-              : ""
-          }
+              <div class="signup-row">
+                <input type="text" class="input-name" placeholder="Your name">
+                <input type="email" class="input-email" placeholder="Your email">
+              </div>
 
-          <p><strong>${remaining}</strong> spots remaining</p>
+              <textarea class="input-note" placeholder="Optional note"></textarea>
 
-          ${signupNamesHTML}
+              <div class="signup-buttons">
+                <button class="btn btn-primary confirm-btn" data-slot="${slot.id}">Confirm</button>
+                <button class="btn btn-secondary cancel-btn" data-slot="${slot.id}">Cancel</button>
+              </div>
 
-          ${
-            remaining > 0
-              ? `
-                <button class="btn btn-primary signup-btn" data-slot="${slot.id}">
-                  Sign Up
-                </button>
+            </div>
+          `
+          : `<p class="helper-text">This slot is full.</p>`
+      }
+    `;
 
-                <div class="signup-form" id="form-${slot.id}" style="display:none;">
-
-                  <div class="signup-row">
-                    <input type="text" class="input-name" placeholder="Your name">
-                    <input type="email" class="input-email" placeholder="Your email">
-                  </div>
-
-                  <textarea class="input-note" placeholder="Optional note"></textarea>
-
-                  <div class="signup-buttons">
-                    <button class="btn btn-primary confirm-btn" data-slot="${slot.id}">Confirm</button>
-                    <button class="btn btn-secondary cancel-btn" data-slot="${slot.id}">Cancel</button>
-                  </div>
-
-                </div>
-              `
-              : `<p class="helper-text">This slot is full.</p>`
-          }
-
-        </article>
-      `;
-    });
-
-    html += `<hr/>`;
+    slotListEl.appendChild(card);
   });
-
-  slotListEl.innerHTML = html;
 
   enableSignupButtons();
 }
 
-// ---------- ENABLE SIGNUP BUTTONS ----------
+// ------------------------
+// Signup Flow
+// ------------------------
 function enableSignupButtons() {
-  document.querySelectorAll(".signup-btn").forEach(btn => {
+  document.querySelectorAll(".signup-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const slotId = btn.dataset.slot;
-      const form = document.getElementById(`form-${slotId}`);
-      form.style.display = "block";
-      btn.style.display = "none";
+      document.getElementById(`form-${slotId}`).style.display = "block";
     });
   });
 
-  document.querySelectorAll(".cancel-btn").forEach(btn => {
+  document.querySelectorAll(".cancel-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const slotId = btn.dataset.slot;
-      const form = document.getElementById(`form-${slotId}`);
-      const signupBtn = document.querySelector(`.signup-btn[data-slot="${slotId}"]`);
-
-      form.style.display = "none";
-      signupBtn.style.display = "block";
+      document.getElementById(`form-${slotId}`).style.display = "none";
     });
   });
 
-  document.querySelectorAll(".confirm-btn").forEach(btn => {
+  document.querySelectorAll(".confirm-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const slotId = btn.dataset.slot;
-      await submitSignup(slotId);
+      submitSignup(slotId);
     });
   });
 }
 
-// ---------- SUBMIT SIGNUP ----------
 async function submitSignup(slotId) {
-  const form = document.getElementById(`form-${slotId}`);
-  const name = form.querySelector(".input-name").value.trim();
-  const email = form.querySelector(".input-email").value.trim();
-  const note = form.querySelector(".input-note").value.trim();
+  messageEl.textContent = "";
 
-  if (!name || !email) {
-    alert("Please enter your name and email.");
+  const form = document.getElementById(`form-${slotId}`);
+  const fullName = form.querySelector(".input-name").value.trim();
+  const email = form.querySelector(".input-email").value.trim();
+  const note = form.querySelector(".input-note").value.trim() || null;
+
+  if (!fullName || !email) {
+    messageEl.textContent = "Please enter your name and email.";
     return;
   }
 
   const { error } = await supabase.from("signups").insert({
     slot_id: slotId,
-    full_name: name,
-    email: email,
-    note: note,
-    event_id: eventId
+    full_name: fullName,
+    email,
+    note,
   });
 
   if (error) {
-    console.error("Error submitting signup:", error);
-    alert("Something went wrong. Please try again.");
+    console.error(error);
+    messageEl.textContent = "Signup failed.";
     return;
   }
 
-  await loadSlots(); // refresh UI
+  messageEl.textContent = "Signup successful!";
+  loadSlots();
 }
 
-// ---------- FORMATTERS ----------
-function formatDate(dateString) {
-  return new Date(dateString).toLocaleDateString(undefined, {
-    weekday: "long",
-    month: "long",
+// ------------------------
+// Helpers
+// ------------------------
+function formatDate(iso) {
+  return new Date(iso).toLocaleString([], {
+    weekday: "short",
+    month: "short",
     day: "numeric",
-    year: "numeric"
+    hour: "numeric",
+    minute: "2-digit",
   });
 }
 
 function formatTime(timeString) {
-  return new Date(timeString).toLocaleTimeString([], {
+  if (!timeString) return "";
+  const [hour, minute] = timeString.split(":").map(Number);
+  const date = new Date();
+  date.setHours(hour);
+  date.setMinutes(minute);
+  return date.toLocaleTimeString([], {
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
   });
 }
