@@ -1,4 +1,4 @@
-// admin-reports.js — FULL MERGED VERSION (NO RELATIONSHIPS NEEDED)
+// admin-reports.js — FULL MERGED VERSION WITH PARTICIPANT REPORTS
 
 import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
@@ -71,7 +71,7 @@ async function loadEvents() {
 }
 
 // ================================================
-// Load signup preview (basic report)
+// Load signup preview (basic per-event signup list)
 // ================================================
 async function loadPreview(eventId) {
   const preview = document.getElementById("preview-container");
@@ -93,19 +93,35 @@ async function loadPreview(eventId) {
     return;
   }
 
-  preview.innerHTML = signups
+  // Simple table view
+  const rowsHtml = signups
     .map(s => `
-      <div class="report-row">
-        <strong>${s.full_name}</strong>
-        <span>${s.email}</span>
-        <span>${s.checked_in ? "✅ Checked In" : "❌ Not Checked In"}</span>
-      </div>
+      <tr>
+        <td>${s.full_name}</td>
+        <td>${s.email || ""}</td>
+        <td>${s.checked_in ? "✅" : "❌"}</td>
+      </tr>
     `)
     .join("");
+
+  preview.innerHTML = `
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Checked In</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
 }
 
 // ================================================
-// Helper: Build Slot Fulfillment Structure
+// Helper: Build Slot Data with Attached Signups
 // ================================================
 async function buildSlotData(eventId) {
   const { data: slots, error: slotErr } = await supabase
@@ -158,24 +174,46 @@ async function loadSlotFulfillment(eventId) {
     return;
   }
 
-  preview.innerHTML = slots
+  const rowsHtml = slots
     .map(slot => {
       const filled = slot.signups.length;
       const remaining = slot.quantity - filled;
-      const pct = Math.round((filled / slot.quantity) * 100);
+      const pct = slot.quantity > 0
+        ? Math.round((filled / slot.quantity) * 100)
+        : 0;
 
       return `
-        <div class="report-row">
-          <strong>${slot.name}</strong>
-          <span>${slot.start_time || ""} → ${slot.end_time || ""}</span>
-          <span>Needed: ${slot.quantity}</span>
-          <span>Filled: ${filled}</span>
-          <span>Remaining: ${remaining}</span>
-          <span>${pct}% Filled</span>
-        </div>
+        <tr>
+          <td>${slot.name}</td>
+          <td>${slot.start_time || ""}</td>
+          <td>${slot.end_time || ""}</td>
+          <td>${slot.quantity}</td>
+          <td>${filled}</td>
+          <td>${remaining}</td>
+          <td>${pct}%</td>
+        </tr>
       `;
     })
     .join("");
+
+  preview.innerHTML = `
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Slot</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Needed</th>
+          <th>Filled</th>
+          <th>Remaining</th>
+          <th>% Filled</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
 }
 
 // ================================================
@@ -194,24 +232,259 @@ async function loadUnfilledSlots(eventId) {
     return;
   }
 
-  preview.innerHTML = unfilled
+  const rowsHtml = unfilled
     .map(slot => {
       const filled = slot.signups.length;
       const remaining = slot.quantity - filled;
-      const pct = Math.round((filled / slot.quantity) * 100);
+      const pct = slot.quantity > 0
+        ? Math.round((filled / slot.quantity) * 100)
+        : 0;
 
       return `
-        <div class="report-row">
-          <strong>${slot.name}</strong>
-          <span>${slot.start_time || ""} → ${slot.end_time || ""}</span>
-          <span>Needed: ${slot.quantity}</span>
-          <span>Filled: ${filled}</span>
-          <span>Remaining: ${remaining}</span>
-          <span>${pct}% Filled</span>
-        </div>
+        <tr>
+          <td>${slot.name}</td>
+          <td>${slot.start_time || ""}</td>
+          <td>${slot.end_time || ""}</td>
+          <td>${slot.quantity}</td>
+          <td>${filled}</td>
+          <td>${remaining}</td>
+          <td>${pct}%</td>
+        </tr>
       `;
     })
     .join("");
+
+  preview.innerHTML = `
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Slot</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Needed</th>
+          <th>Filled</th>
+          <th>Remaining</th>
+          <th>% Filled</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
+}
+
+// ================================================
+// Participant Activity Report (GLOBAL, ALL EVENTS)
+// ================================================
+async function loadParticipantActivity() {
+  const preview = document.getElementById("preview-container");
+  preview.textContent = "Loading participant activity…";
+
+  const { data: signups, error: signupErr } = await supabase
+    .from("signups")
+    .select("*");
+
+  if (signupErr) {
+    console.error("Error loading signups for participant report:", signupErr);
+    preview.textContent = "Error loading data.";
+    return;
+  }
+
+  if (!signups.length) {
+    preview.textContent = "No signups found.";
+    return;
+  }
+
+  const { data: slots, error: slotErr } = await supabase
+    .from("slots")
+    .select("id, start_time, end_time, event_id");
+
+  if (slotErr) {
+    console.error("Error loading slots for participant report:", slotErr);
+    preview.textContent = "Error loading data.";
+    return;
+  }
+
+  const slotMap = {};
+  slots.forEach(sl => {
+    slotMap[sl.id] = sl;
+  });
+
+  // Aggregate by participant
+  const participantMap = {};
+
+  signups.forEach(s => {
+    const key = s.email || `${s.full_name}#${s.id}`;
+    if (!participantMap[key]) {
+      participantMap[key] = {
+        name: s.full_name,
+        email: s.email || "",
+        events: new Set(),
+        slotsCount: 0,
+        totalHours: 0,
+        checkedInCount: 0,
+        noShowCount: 0
+      };
+    }
+
+    const p = participantMap[key];
+    if (s.event_id) {
+      p.events.add(s.event_id);
+    }
+
+    p.slotsCount += 1;
+
+    if (s.checked_in) {
+      p.checkedInCount += 1;
+    } else {
+      p.noShowCount += 1;
+    }
+
+    // Calculate hours from slot duration (if slot info exists)
+    const slot = slotMap[s.slot_id];
+    if (slot && slot.start_time && slot.end_time) {
+      const start = new Date(slot.start_time);
+      const end = new Date(slot.end_time);
+      const diffMs = end - start;
+      if (!isNaN(diffMs) && diffMs > 0) {
+        p.totalHours += diffMs / (1000 * 60 * 60); // ms → hours
+      }
+    }
+  });
+
+  const participants = Object.values(participantMap).map(p => ({
+    ...p,
+    eventsCount: p.events.size,
+    attendanceRate:
+      p.slotsCount > 0
+        ? Math.round((p.checkedInCount / p.slotsCount) * 100)
+        : 0
+  }));
+
+  if (!participants.length) {
+    preview.textContent = "No participant data available.";
+    return;
+  }
+
+  const rowsHtml = participants
+    .map(p => `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.email}</td>
+        <td>${p.eventsCount}</td>
+        <td>${p.slotsCount}</td>
+        <td>${p.totalHours.toFixed(2)}</td>
+        <td>${p.checkedInCount}</td>
+        <td>${p.noShowCount}</td>
+        <td>${p.attendanceRate}%</td>
+      </tr>
+    `)
+    .join("");
+
+  preview.innerHTML = `
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Events</th>
+          <th>Slots</th>
+          <th>Hours</th>
+          <th>Checked In</th>
+          <th>No-Shows</th>
+          <th>Attendance</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
+}
+
+// ================================================
+// No-Show Report (PER EVENT)
+// ================================================
+async function loadNoShowReport(eventId) {
+  const preview = document.getElementById("preview-container");
+  preview.textContent = "Loading no-show report…";
+
+  const { data: signups, error: signupErr } = await supabase
+    .from("signups")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (signupErr) {
+    console.error("Error loading signups for no-show report:", signupErr);
+    preview.textContent = "Error loading data.";
+    return;
+  }
+
+  if (!signups.length) {
+    preview.textContent = "No signups for this event.";
+    return;
+  }
+
+  const { data: slots, error: slotErr } = await supabase
+    .from("slots")
+    .select("id, name, start_time, end_time")
+    .eq("event_id", eventId);
+
+  if (slotErr) {
+    console.error("Error loading slots for no-show report:", slotErr);
+    preview.textContent = "Error loading data.";
+    return;
+  }
+
+  const slotMap = {};
+  slots.forEach(sl => {
+    slotMap[sl.id] = sl;
+  });
+
+  const rowsHtml = signups
+    .map(s => {
+      const slot = slotMap[s.slot_id];
+      const slotName = slot?.name || "";
+      const start = slot?.start_time || "";
+      const end = slot?.end_time || "";
+      const checked = s.checked_in;
+      const noShow = !checked;
+
+      return `
+        <tr>
+          <td>${s.full_name}</td>
+          <td>${s.email || ""}</td>
+          <td>${slotName}</td>
+          <td>${start}</td>
+          <td>${end}</td>
+          <td>${checked ? "✅" : "❌"}</td>
+          <td>${noShow ? "Yes" : "No"}</td>
+          <td>${s.checked_in_at || ""}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  preview.innerHTML = `
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Slot</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Checked In</th>
+          <th>No-Show</th>
+          <th>Checked In At</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+  `;
 }
 
 // ================================================
@@ -230,7 +503,10 @@ document.getElementById("downloadSlotFulfillment").onclick = async () => {
     needed: slot.quantity,
     filled: slot.signups.length,
     remaining: slot.quantity - slot.signups.length,
-    pct_filled: Math.round((slot.signups.length / slot.quantity) * 100)
+    pct_filled:
+      slot.quantity > 0
+        ? Math.round((slot.signups.length / slot.quantity) * 100)
+        : 0
   }));
 
   downloadCSV("slot_fulfillment.csv", formatted);
@@ -314,6 +590,164 @@ document.getElementById("downloadAll").onclick = async () => {
 };
 
 // ================================================
+// CSV Download: Participant Activity (GLOBAL)
+// ================================================
+document.getElementById("downloadParticipantActivity").onclick = async () => {
+  const { data: signups, error: signupErr } = await supabase
+    .from("signups")
+    .select("*");
+
+  if (signupErr) {
+    console.error("Error loading signups for participant CSV:", signupErr);
+    return;
+  }
+
+  if (!signups.length) {
+    alert("No signups found.");
+    return;
+  }
+
+  const { data: slots, error: slotErr } = await supabase
+    .from("slots")
+    .select("id, start_time, end_time, event_id");
+
+  if (slotErr) {
+    console.error("Error loading slots for participant CSV:", slotErr);
+    return;
+  }
+
+  const slotMap = {};
+  slots.forEach(sl => {
+    slotMap[sl.id] = sl;
+  });
+
+  const participantMap = {};
+
+  signups.forEach(s => {
+    const key = s.email || `${s.full_name}#${s.id}`;
+    if (!participantMap[key]) {
+      participantMap[key] = {
+        name: s.full_name,
+        email: s.email || "",
+        events: new Set(),
+        slotsCount: 0,
+        totalHours: 0,
+        checkedInCount: 0,
+        noShowCount: 0
+      };
+    }
+
+    const p = participantMap[key];
+    if (s.event_id) {
+      p.events.add(s.event_id);
+    }
+
+    p.slotsCount += 1;
+
+    if (s.checked_in) {
+      p.checkedInCount += 1;
+    } else {
+      p.noShowCount += 1;
+    }
+
+    const slot = slotMap[s.slot_id];
+    if (slot && slot.start_time && slot.end_time) {
+      const start = new Date(slot.start_time);
+      const end = new Date(slot.end_time);
+      const diffMs = end - start;
+      if (!isNaN(diffMs) && diffMs > 0) {
+        p.totalHours += diffMs / (1000 * 60 * 60);
+      }
+    }
+  });
+
+  const rows = Object.values(participantMap).map(p => ({
+    name: p.name,
+    email: p.email,
+    events: p.events.size,
+    slots: p.slotsCount,
+    hours: p.totalHours.toFixed(2),
+    checked_in: p.checkedInCount,
+    no_shows: p.noShowCount,
+    attendance_rate:
+      p.slotsCount > 0
+        ? Math.round((p.checkedInCount / p.slotsCount) * 100)
+        : 0
+  }));
+
+  if (!rows.length) {
+    alert("No participant data to export.");
+    return;
+  }
+
+  downloadCSV("participant_activity.csv", rows);
+};
+
+// ================================================
+// CSV Download: No-Show Report (PER EVENT)
+// ================================================
+document.getElementById("downloadNoShow").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+
+  const eventLookup = await buildEventLookup();
+
+  const { data: signups, error: signupErr } = await supabase
+    .from("signups")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (signupErr) {
+    console.error("Error loading signups for no-show CSV:", signupErr);
+    return;
+  }
+
+  if (!signups.length) {
+    alert("No signups for this event.");
+    return;
+  }
+
+  const { data: slots, error: slotErr } = await supabase
+    .from("slots")
+    .select("id, name, start_time, end_time")
+    .eq("event_id", eventId);
+
+  if (slotErr) {
+    console.error("Error loading slots for no-show CSV:", slotErr);
+    return;
+  }
+
+  const slotMap = {};
+  slots.forEach(sl => {
+    slotMap[sl.id] = sl;
+  });
+
+  const rows = signups.map(s => {
+    const slot = slotMap[s.slot_id];
+    const slotName = slot?.name || "";
+    const start = slot?.start_time || "";
+    const end = slot?.end_time || "";
+    const checked = s.checked_in;
+    const noShow = !checked;
+
+    return {
+      event_id: s.event_id,
+      event_title: eventLookup[s.event_id]?.title || "",
+      name: s.full_name,
+      email: s.email || "",
+      slot_name: slotName,
+      slot_start: start,
+      slot_end: end,
+      checked_in: checked ? "Yes" : "No",
+      no_show: noShow ? "Yes" : "No",
+      checked_in_at: s.checked_in_at || ""
+    };
+  });
+
+  downloadCSV("no_show_report.csv", rows);
+};
+
+// ================================================
 // Button Wiring
 // ================================================
 document.getElementById("slotFulfillmentBtn").onclick = () => {
@@ -328,9 +762,19 @@ document.getElementById("unfilledSlotsBtn").onclick = () => {
   loadUnfilledSlots(eventId);
 };
 
-// Init
-loadEvents();
+document.getElementById("participantActivityBtn").onclick = () => {
+  loadParticipantActivity();
+};
 
+document.getElementById("noShowReportBtn").onclick = () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+  loadNoShowReport(eventId);
+};
+
+// ================================================
+// CSV Utility
+// ================================================
 function downloadCSV(filename, rows) {
   if (!rows || !rows.length) {
     alert("No data to download.");
@@ -347,3 +791,6 @@ function downloadCSV(filename, rows) {
   link.download = filename;
   link.click();
 }
+
+// Init
+loadEvents();
