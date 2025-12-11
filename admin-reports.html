@@ -36,7 +36,7 @@
 
       <section class="card">
         <h2>Reports</h2>
-        <p>View and export signups, check-ins, slot coverage, and participant activity.</p>
+        <p>View and export signups, check-ins, slot coverage, participant activity, and event readiness.</p>
 
         <label for="eventSelect"><strong>Select event</strong></label>
         <select id="eventSelect">
@@ -44,6 +44,12 @@
         </select>
 
         <div class="button-row">
+          <!-- EVENT SUMMARY & READINESS -->
+          <button id="eventSummaryBtn">View Event Summary</button>
+          <button id="downloadEventSummary">Download Event Summary CSV</button>
+          <button id="readinessBtn">View Readiness Dashboard</button>
+          <button id="downloadReadiness">Download Readiness CSV</button>
+
           <!-- SLOT REPORT BUTTONS -->
           <button id="slotFulfillmentBtn">View Slot Fulfillment</button>
           <button id="unfilledSlotsBtn">View Unfilled Slots</button>
