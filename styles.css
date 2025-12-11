@@ -496,3 +496,20 @@ table.report-table td {
   background: #f0f2f6;
   color: #33415c;
 }
+
+.card {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.card table {
+  width: 100%;
+  table-layout: fixed; /* forces columns to behave */
+}
+
+.card table td,
+.card table th {
+  overflow-wrap: break-word;
+}
