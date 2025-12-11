@@ -68,6 +68,9 @@ async function loadSlots() {
     return;
   }
 
+  // Sort slots alphabetically by category
+slots.sort((a, b) => a.category.localeCompare(b.category));
+
   renderSlots(data);
 }
 
