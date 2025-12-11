@@ -1,4 +1,4 @@
-// admin-reports.js — FIXED VERSION
+// admin-reports.js — FULL MERGED VERSION (NO RELATIONSHIPS NEEDED)
 
 import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) logoutBtn.addEventListener("click", logoutAdmin);
 });
 
-// ----------------------------
-// Build Event Lookup Map (Events → Title & Times)
-// ----------------------------
+// ================================================
+// Build Event Lookup Map
+// ================================================
 async function buildEventLookup() {
   const { data: events, error } = await supabase
     .from("events")
@@ -37,9 +37,9 @@ async function buildEventLookup() {
   return map;
 }
 
-// ----------------------------
+// ================================================
 // Load events into dropdown
-// ----------------------------
+// ================================================
 async function loadEvents() {
   const eventSelect = document.getElementById("eventSelect");
 
@@ -70,16 +70,16 @@ async function loadEvents() {
   });
 }
 
-// ----------------------------
-// Load signup preview
-// ----------------------------
+// ================================================
+// Load signup preview (basic report)
+// ================================================
 async function loadPreview(eventId) {
   const preview = document.getElementById("preview-container");
   preview.textContent = "Loading signups…";
 
   const { data: signups, error } = await supabase
     .from("signups")
-    .select("*, slots(name)")
+    .select("*")
     .eq("event_id", eventId);
 
   if (error) {
@@ -96,39 +96,69 @@ async function loadPreview(eventId) {
   preview.innerHTML = signups
     .map(s => `
       <div class="report-row">
-        <strong>${s.full_name}</strong>  
-        <span>${s.slots?.name || "Unknown Slot"}</span>
+        <strong>${s.full_name}</strong>
+        <span>${s.email}</span>
         <span>${s.checked_in ? "✅ Checked In" : "❌ Not Checked In"}</span>
       </div>
     `)
     .join("");
 }
 
-// --------------------------------------
-// SLOT FULFILLMENT REPORT (ALL SLOTS)
-// --------------------------------------
+// ================================================
+// Helper: Build Slot Fulfillment Structure
+// ================================================
+async function buildSlotData(eventId) {
+  const { data: slots, error: slotErr } = await supabase
+    .from("slots")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (slotErr) {
+    console.error("Error loading slots:", slotErr);
+    return [];
+  }
+
+  const { data: signups, error: signupErr } = await supabase
+    .from("signups")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (signupErr) {
+    console.error("Error loading signups:", signupErr);
+    return [];
+  }
+
+  // Group signups by slot_id
+  const signupMap = {};
+  signups.forEach(s => {
+    if (!signupMap[s.slot_id]) signupMap[s.slot_id] = [];
+    signupMap[s.slot_id].push(s);
+  });
+
+  // Attach grouped signups to each slot
+  const finalSlots = slots.map(slot => ({
+    ...slot,
+    signups: signupMap[slot.id] || []
+  }));
+
+  return finalSlots;
+}
+
+// ================================================
+// Slot Fulfillment Report (UI)
+// ================================================
 async function loadSlotFulfillment(eventId) {
   const preview = document.getElementById("preview-container");
   preview.textContent = "Loading slot fulfillment…";
 
-  const { data, error } = await supabase
-    .from("slots")
-    .select("id, name, start_time, end_time, quantity, signups(id)")
-    .eq("event_id", eventId);
+  const slots = await buildSlotData(eventId);
 
-  if (error) {
-    console.error("Error loading slot fulfillment:", error);
-    preview.textContent = "Error loading slot fulfillment.";
+  if (!slots.length) {
+    preview.textContent = "No slots found.";
     return;
   }
 
-  if (!data.length) {
-    preview.textContent = "No slots found for this event.";
-    return;
-  }
-
-  // Build UI output
-  preview.innerHTML = data
+  preview.innerHTML = slots
     .map(slot => {
       const filled = slot.signups.length;
       const remaining = slot.quantity - filled;
@@ -148,129 +178,16 @@ async function loadSlotFulfillment(eventId) {
     .join("");
 }
 
-// ----------------------------
-// CSV Download Helper
-// ----------------------------
-function downloadCSV(filename, rows) {
-  if (!rows || !rows.length) {
-    alert("No data to download.");
-    return;
-  }
-
-  const headers = Object.keys(rows[0]).join(",");
-  const values = rows.map(r => Object.values(r).join(",")).join("\n");
-  const output = headers + "\n" + values;
-
-  const blob = new Blob([output], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
-}
-
-// ----------------------------
-// Download Signups
-// ----------------------------
-document.getElementById("downloadSignups").onclick = async () => {
-  const eventId = document.getElementById("eventSelect").value;
-  if (!eventId) return alert("Select an event first.");
-
-  const eventLookup = await buildEventLookup();
-
-  const { data, error } = await supabase
-    .from("signups")
-    .select("full_name,email,checked_in,event_id,slots(name,start_time,end_time)")
-    .eq("event_id", eventId);
-
-  if (error) return console.error(error);
-
-  const formatted = data.map(s => ({
-    event_id: s.event_id,
-    event_title: eventLookup[s.event_id]?.title || "",
-    name: s.full_name,
-    email: s.email,
-    slot_name: s.slots?.name || "",
-    slot_start_time: s.slots?.start_time || "",
-    slot_end_time: s.slots?.end_time || "",
-    checked_in: s.checked_in ? "Yes" : "No"
-  }));
-
-  downloadCSV("signups.csv", formatted);
-};
-// ----------------------------
-// Download Check-ins
-// ----------------------------
-document.getElementById("downloadCheckins").onclick = async () => {
-  const eventId = document.getElementById("eventSelect").value;
-
-  const eventLookup = await buildEventLookup();
-
-  const { data, error } = await supabase
-    .from("signups")
-    .select("full_name,email,checked_in,checked_in_at,event_id,slots(name,start_time,end_time)")
-    .eq("event_id", eventId)
-    .eq("checked_in", true);
-
-  if (error) return console.error(error);
-
-  const formatted = data.map(s => ({
-    event_id: s.event_id,
-    event_title: eventLookup[s.event_id]?.title || "",
-    name: s.full_name,
-    email: s.email,
-    slot_name: s.slots?.name || "",
-    slot_start_time: s.slots?.start_time || "",
-    slot_end_time: s.slots?.end_time || "",
-    checked_in_at: s.checked_in_at || ""
-  }));
-
-  downloadCSV("checkins.csv", formatted);
-};
-// ----------------------------
-// Download all signups
-// ----------------------------
-document.getElementById("downloadAll").onclick = async () => {
-  const eventLookup = await buildEventLookup();
-
-  const { data, error } = await supabase
-    .from("signups")
-    .select("full_name,email,checked_in,event_id,slots(name,start_time,end_time)");
-
-  if (error) return console.error(error);
-
-  const formatted = data.map(s => ({
-    event_id: s.event_id,
-    event_title: eventLookup[s.event_id]?.title || "",
-    name: s.full_name,
-    email: s.email,
-    slot_name: s.slots?.name || "",
-    slot_start_time: s.slots?.start_time || "",
-    slot_end_time: s.slots?.end_time || "",
-    checked_in: s.checked_in ? "Yes" : "No"
-  }));
-
-  downloadCSV("all_signups.csv", formatted);
-};
-
-// --------------------------------------
-// UNFILLED SLOTS REPORT (REMAINING > 0)
-// --------------------------------------
+// ================================================
+// Unfilled Slots Report (UI)
+// ================================================
 async function loadUnfilledSlots(eventId) {
   const preview = document.getElementById("preview-container");
   preview.textContent = "Loading unfilled slots…";
 
-  const { data, error } = await supabase
-    .from("slots")
-    .select("id, name, start_time, end_time, quantity, signups(id)")
-    .eq("event_id", eventId);
+  const slots = await buildSlotData(eventId);
 
-  if (error) {
-    console.error("Error loading unfilled slots:", error);
-    preview.textContent = "Error loading data.";
-    return;
-  }
-
-  const unfilled = data.filter(slot => slot.signups.length < slot.quantity);
+  const unfilled = slots.filter(slot => slot.signups.length < slot.quantity);
 
   if (!unfilled.length) {
     preview.textContent = "All slots are fully filled!";
@@ -297,16 +214,16 @@ async function loadUnfilledSlots(eventId) {
     .join("");
 }
 
+// ================================================
+// CSV Download: Slot Fulfillment
+// ================================================
 document.getElementById("downloadSlotFulfillment").onclick = async () => {
   const eventId = document.getElementById("eventSelect").value;
   if (!eventId) return alert("Select an event first.");
 
-  const { data } = await supabase
-    .from("slots")
-    .select("id, name, start_time, end_time, quantity, signups(id)")
-    .eq("event_id", eventId);
+  const slots = await buildSlotData(eventId);
 
-  const formatted = data.map(slot => ({
+  const formatted = slots.map(slot => ({
     slot_name: slot.name,
     start_time: slot.start_time,
     end_time: slot.end_time,
@@ -319,7 +236,86 @@ document.getElementById("downloadSlotFulfillment").onclick = async () => {
   downloadCSV("slot_fulfillment.csv", formatted);
 };
 
-// Slot Fulfillment + Unfilled Slot Buttons
+// ================================================
+// CSV Download: Regular Signups
+// ================================================
+document.getElementById("downloadSignups").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+
+  const eventLookup = await buildEventLookup();
+
+  const { data, error } = await supabase
+    .from("signups")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (error) return console.error(error);
+
+  const formatted = data.map(s => ({
+    event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
+    name: s.full_name,
+    email: s.email,
+    checked_in: s.checked_in ? "Yes" : "No"
+  }));
+
+  downloadCSV("signups.csv", formatted);
+};
+
+// ================================================
+// CSV Download: Check-Ins
+// ================================================
+document.getElementById("downloadCheckins").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
+
+  const eventLookup = await buildEventLookup();
+
+  const { data, error } = await supabase
+    .from("signups")
+    .select("*")
+    .eq("event_id", eventId)
+    .eq("checked_in", true);
+
+  if (error) return console.error(error);
+
+  const formatted = data.map(s => ({
+    event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
+    name: s.full_name,
+    email: s.email,
+    checked_in_at: s.checked_in_at || ""
+  }));
+
+  downloadCSV("checkins.csv", formatted);
+};
+
+// ================================================
+// CSV Download: ALL signups across all events
+// ================================================
+document.getElementById("downloadAll").onclick = async () => {
+  const eventLookup = await buildEventLookup();
+
+  const { data, error } = await supabase
+    .from("signups")
+    .select("*");
+
+  if (error) return console.error(error);
+
+  const formatted = data.map(s => ({
+    event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
+    name: s.full_name,
+    email: s.email,
+    checked_in: s.checked_in ? "Yes" : "No"
+  }));
+
+  downloadCSV("all_signups.csv", formatted);
+};
+
+// ================================================
+// Button Wiring
+// ================================================
 document.getElementById("slotFulfillmentBtn").onclick = () => {
   const eventId = document.getElementById("eventSelect").value;
   if (!eventId) return alert("Select an event first.");
@@ -334,3 +330,20 @@ document.getElementById("unfilledSlotsBtn").onclick = () => {
 
 // Init
 loadEvents();
+
+function downloadCSV(filename, rows) {
+  if (!rows || !rows.length) {
+    alert("No data to download.");
+    return;
+  }
+
+  const headers = Object.keys(rows[0]).join(",");
+  const values = rows.map(r => Object.values(r).join(",")).join("\n");
+  const output = headers + "\n" + values;
+
+  const blob = new Blob([output], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
