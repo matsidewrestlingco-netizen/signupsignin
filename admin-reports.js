@@ -1,4 +1,16 @@
+// admin-reports.js — FIXED VERSION
+
 import { supabase } from "./supabaseClient.js";
+import { requireAdmin, logoutAdmin } from "./auth.js";
+
+// Enforce admin access
+requireAdmin();
+
+// Attach logout handler
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.querySelector(".logout-btn");
+  if (logoutBtn) logoutBtn.addEventListener("click", logoutAdmin);
+});
 
 // ----------------------------
 // Load events into dropdown
@@ -26,9 +38,10 @@ async function loadEvents() {
     .map(e => `<option value="${e.id}">${e.title}</option>`)
     .join("");
 
+  loadPreview(eventSelect.value);
+
   eventSelect.addEventListener("change", () => {
-    const id = eventSelect.value;
-    if (id) loadPreview(id);
+    loadPreview(eventSelect.value);
   });
 }
 
@@ -87,7 +100,7 @@ function downloadCSV(filename, rows) {
 }
 
 // ----------------------------
-// Button: Download Signups
+// Download Signups
 // ----------------------------
 document.getElementById("downloadSignups").onclick = async () => {
   const eventId = document.getElementById("eventSelect").value;
@@ -111,7 +124,7 @@ document.getElementById("downloadSignups").onclick = async () => {
 };
 
 // ----------------------------
-// Button: Download Check-ins
+// Download Check-ins
 // ----------------------------
 document.getElementById("downloadCheckins").onclick = async () => {
   const eventId = document.getElementById("eventSelect").value;
@@ -133,7 +146,7 @@ document.getElementById("downloadCheckins").onclick = async () => {
 };
 
 // ----------------------------
-// Button: Download All Signups (All Events)
+// Download all signups
 // ----------------------------
 document.getElementById("downloadAll").onclick = async () => {
   const { data } = await supabase
