@@ -1,64 +1,51 @@
-// admin.js - Create Event page
-
+// admin.js - Fixed version for Create Event
 import { supabase } from "./supabaseClient.js";
 import { requireAdmin, logoutAdmin } from "./auth.js";
 
-// Enforce admin login immediately
+// Enforce admin login
 requireAdmin();
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Wire logout
-  const logoutLink = document.getElementById("logout-link");
-  if (logoutLink) {
-    logoutLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      logoutAdmin();
-    });
+  // Logout wiring
+  const logoutBtn = document.querySelector(".logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logoutAdmin);
   }
 
   const form = document.getElementById("createEventForm");
-  const msgEl = document.getElementById("createEventMessage");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    msgEl.textContent = "";
 
-    const title = document.getElementById("event-title").value.trim();
-    const start = document.getElementById("event-start").value;
-    const location = document.getElementById("event-location").value.trim();
-    const description =
-      document.getElementById("event-description").value.trim();
-    const isPublic = document.getElementById("event-public").checked;
+    // MATCHED to HTML IDs
+    const title = document.getElementById("title").value.trim();
+    const start_time = document.getElementById("start_time").value;
+    const location = document.getElementById("location").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const is_public = document.getElementById("is_public").checked;
 
-    if (!title || !start) {
-      msgEl.textContent = "Title and start time are required.";
+    // Basic validation
+    if (!title || !start_time) {
+      alert("Title and start time are required.");
       return;
     }
 
+    // Insert into Supabase
     const { error } = await supabase.from("events").insert({
       title,
-      start_time: start,
+      start_time,
       location: location || null,
       description: description || null,
-      is_public: isPublic,
+      is_public
     });
 
     if (error) {
-      console.error(error);
-      msgEl.textContent = "Error creating event. Check console.";
+      console.error("SUPABASE ERROR:", error);
+      alert("Error creating event. Check console.");
       return;
     }
 
-function logoutAdmin() {
-  // Removes admin session cookie
-  document.cookie = "matside_admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-  alert("You have been logged out.");
-  window.location.href = "admin-login.html";
-}
-    
-    msgEl.textContent = "Event created successfully!";
-    form.reset();
-    document.getElementById("event-public").checked = true;
+    alert("Event created successfully!");
+    window.location.href = "admin-events.html";
   });
 });
