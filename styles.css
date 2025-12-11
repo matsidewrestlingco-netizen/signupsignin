@@ -514,3 +514,23 @@ table.report-table td {
 .card table th {
   overflow-wrap: break-word;
 }
+.slot-category-header {
+  margin-top: 32px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.slot-category-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.slot-card {
+  background: #fff;
+  padding: 14px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
