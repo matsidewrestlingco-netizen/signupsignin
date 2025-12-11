@@ -37,10 +37,13 @@ function renderEventCard(event) {
       </div>
 
       <div class="event-card-actions">
-        <a class="btn-small" href="admin-edit-event.html?id=${event.id}">
+        <button class="btn-small primary"
+          onclick="window.location.href='admin-edit-event.html?id=${event.id}'">
           Edit Event
-        </a>
-        <button class="btn-small secondary" onclick="deleteEvent('${event.id}')">
+        </button>
+
+        <button class="btn-small secondary"
+          onclick="deleteEvent('${event.id}')">
           Delete
         </button>
       </div>
