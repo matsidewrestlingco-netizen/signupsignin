@@ -36,7 +36,7 @@
 
       <section class="card">
         <h2>Reports</h2>
-        <p>Export signups, check-ins, and slot fulfillment data for your events.</p>
+        <p>View and export signups, check-ins, slot coverage, and participant activity.</p>
 
         <label for="eventSelect"><strong>Select event</strong></label>
         <select id="eventSelect">
@@ -44,11 +44,16 @@
         </select>
 
         <div class="button-row">
-
           <!-- SLOT REPORT BUTTONS -->
           <button id="slotFulfillmentBtn">View Slot Fulfillment</button>
           <button id="unfilledSlotsBtn">View Unfilled Slots</button>
           <button id="downloadSlotFulfillment">Download Slot Fulfillment CSV</button>
+
+          <!-- PARTICIPANT REPORT BUTTONS -->
+          <button id="participantActivityBtn">View Participant Activity (All Events)</button>
+          <button id="downloadParticipantActivity">Download Participant Activity CSV</button>
+          <button id="noShowReportBtn">View No-Show Report</button>
+          <button id="downloadNoShow">Download No-Show CSV</button>
 
           <!-- EXISTING REPORT BUTTONS -->
           <button id="downloadSignups">Download Signups CSV</button>
@@ -59,7 +64,7 @@
 
       <section class="card">
         <h2>Preview</h2>
-        <div id="preview-container">Choose an event above to see reports.</div>
+        <div id="preview-container">Choose an event or run a report above to see data.</div>
       </section>
 
     </main>
