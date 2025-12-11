@@ -104,6 +104,50 @@ async function loadPreview(eventId) {
     .join("");
 }
 
+// --------------------------------------
+// SLOT FULFILLMENT REPORT (ALL SLOTS)
+// --------------------------------------
+async function loadSlotFulfillment(eventId) {
+  const preview = document.getElementById("preview-container");
+  preview.textContent = "Loading slot fulfillment…";
+
+  const { data, error } = await supabase
+    .from("slots")
+    .select("id, name, start_time, end_time, quantity, signups(id)")
+    .eq("event_id", eventId);
+
+  if (error) {
+    console.error("Error loading slot fulfillment:", error);
+    preview.textContent = "Error loading slot fulfillment.";
+    return;
+  }
+
+  if (!data.length) {
+    preview.textContent = "No slots found for this event.";
+    return;
+  }
+
+  // Build UI output
+  preview.innerHTML = data
+    .map(slot => {
+      const filled = slot.signups.length;
+      const remaining = slot.quantity - filled;
+      const pct = Math.round((filled / slot.quantity) * 100);
+
+      return `
+        <div class="report-row">
+          <strong>${slot.name}</strong>
+          <span>${slot.start_time || ""} → ${slot.end_time || ""}</span>
+          <span>Needed: ${slot.quantity}</span>
+          <span>Filled: ${filled}</span>
+          <span>Remaining: ${remaining}</span>
+          <span>${pct}% Filled</span>
+        </div>
+      `;
+    })
+    .join("");
+}
+
 // ----------------------------
 // CSV Download Helper
 // ----------------------------
@@ -206,6 +250,86 @@ document.getElementById("downloadAll").onclick = async () => {
   }));
 
   downloadCSV("all_signups.csv", formatted);
+};
+
+// --------------------------------------
+// UNFILLED SLOTS REPORT (REMAINING > 0)
+// --------------------------------------
+async function loadUnfilledSlots(eventId) {
+  const preview = document.getElementById("preview-container");
+  preview.textContent = "Loading unfilled slots…";
+
+  const { data, error } = await supabase
+    .from("slots")
+    .select("id, name, start_time, end_time, quantity, signups(id)")
+    .eq("event_id", eventId);
+
+  if (error) {
+    console.error("Error loading unfilled slots:", error);
+    preview.textContent = "Error loading data.";
+    return;
+  }
+
+  const unfilled = data.filter(slot => slot.signups.length < slot.quantity);
+
+  if (!unfilled.length) {
+    preview.textContent = "All slots are fully filled!";
+    return;
+  }
+
+  preview.innerHTML = unfilled
+    .map(slot => {
+      const filled = slot.signups.length;
+      const remaining = slot.quantity - filled;
+      const pct = Math.round((filled / slot.quantity) * 100);
+
+      return `
+        <div class="report-row">
+          <strong>${slot.name}</strong>
+          <span>${slot.start_time || ""} → ${slot.end_time || ""}</span>
+          <span>Needed: ${slot.quantity}</span>
+          <span>Filled: ${filled}</span>
+          <span>Remaining: ${remaining}</span>
+          <span>${pct}% Filled</span>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+document.getElementById("downloadSlotFulfillment").onclick = async () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+
+  const { data } = await supabase
+    .from("slots")
+    .select("id, name, start_time, end_time, quantity, signups(id)")
+    .eq("event_id", eventId);
+
+  const formatted = data.map(slot => ({
+    slot_name: slot.name,
+    start_time: slot.start_time,
+    end_time: slot.end_time,
+    needed: slot.quantity,
+    filled: slot.signups.length,
+    remaining: slot.quantity - slot.signups.length,
+    pct_filled: Math.round((slot.signups.length / slot.quantity) * 100)
+  }));
+
+  downloadCSV("slot_fulfillment.csv", formatted);
+};
+
+// Slot Fulfillment + Unfilled Slot Buttons
+document.getElementById("slotFulfillmentBtn").onclick = () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+  loadSlotFulfillment(eventId);
+};
+
+document.getElementById("unfilledSlotsBtn").onclick = () => {
+  const eventId = document.getElementById("eventSelect").value;
+  if (!eventId) return alert("Select an event first.");
+  loadUnfilledSlots(eventId);
 };
 
 // Init
