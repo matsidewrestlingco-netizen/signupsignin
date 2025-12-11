@@ -106,59 +106,78 @@ document.getElementById("downloadSignups").onclick = async () => {
   const eventId = document.getElementById("eventSelect").value;
   if (!eventId) return alert("Select an event first.");
 
+  const eventLookup = await buildEventLookup();
+
   const { data, error } = await supabase
     .from("signups")
-    .select("full_name,email,checked_in,slots(name)")
+    .select("full_name,email,checked_in,event_id,slots(name,start_time,end_time)")
     .eq("event_id", eventId);
 
   if (error) return console.error(error);
 
   const formatted = data.map(s => ({
+    event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
     name: s.full_name,
     email: s.email,
-    slot: s.slots?.name || "",
-    checked_in: s.checked_in ? "Yes" : "No",
+    slot_name: s.slots?.name || "",
+    slot_start_time: s.slots?.start_time || "",
+    slot_end_time: s.slots?.end_time || "",
+    checked_in: s.checked_in ? "Yes" : "No"
   }));
 
   downloadCSV("signups.csv", formatted);
 };
-
 // ----------------------------
 // Download Check-ins
 // ----------------------------
 document.getElementById("downloadCheckins").onclick = async () => {
   const eventId = document.getElementById("eventSelect").value;
 
-  const { data } = await supabase
+  const eventLookup = await buildEventLookup();
+
+  const { data, error } = await supabase
     .from("signups")
-    .select("full_name,email,checked_in,checked_in_at,slots(name)")
+    .select("full_name,email,checked_in,checked_in_at,event_id,slots(name,start_time,end_time)")
     .eq("event_id", eventId)
     .eq("checked_in", true);
 
+  if (error) return console.error(error);
+
   const formatted = data.map(s => ({
+    event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
     name: s.full_name,
     email: s.email,
-    slot: s.slots?.name || "",
-    checked_in_at: s.checked_in_at || "",
+    slot_name: s.slots?.name || "",
+    slot_start_time: s.slots?.start_time || "",
+    slot_end_time: s.slots?.end_time || "",
+    checked_in_at: s.checked_in_at || ""
   }));
 
   downloadCSV("checkins.csv", formatted);
 };
-
 // ----------------------------
 // Download all signups
 // ----------------------------
 document.getElementById("downloadAll").onclick = async () => {
-  const { data } = await supabase
+  const eventLookup = await buildEventLookup();
+
+  const { data, error } = await supabase
     .from("signups")
-    .select("full_name,email,checked_in,event_id,slots(name)");
+    .select("full_name,email,checked_in,event_id,slots(name,start_time,end_time)");
+
+  if (error) return console.error(error);
 
   const formatted = data.map(s => ({
     event_id: s.event_id,
+    event_title: eventLookup[s.event_id]?.title || "",
     name: s.full_name,
     email: s.email,
-    slot: s.slots?.name || "",
-    checked_in: s.checked_in ? "Yes" : "No",
+    slot_name: s.slots?.name || "",
+    slot_start_time: s.slots?.start_time || "",
+    slot_end_time: s.slots?.end_time || "",
+    checked_in: s.checked_in ? "Yes" : "No"
   }));
 
   downloadCSV("all_signups.csv", formatted);
