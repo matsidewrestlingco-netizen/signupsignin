@@ -71,7 +71,52 @@ async function loadSlots() {
   // Sort slots alphabetically by category
 slots.sort((a, b) => a.category.localeCompare(b.category));
 
-  renderSlots(data);
+  function renderSlots(slots) {
+  const container = document.getElementById("slotsContainer");
+  container.innerHTML = "";
+
+  if (!slots.length) {
+    container.innerHTML = "<p>No slots created yet.</p>";
+    return;
+  }
+
+  // 1. Sort by category, then optionally by name
+  slots.sort((a, b) => a.category.localeCompare(b.category));
+
+  // 2. Group by category
+  const grouped = {};
+  slots.forEach(slot => {
+    if (!grouped[slot.category]) grouped[slot.category] = [];
+    grouped[slot.category].push(slot);
+  });
+
+  // 3. Build HTML with headers
+  let html = "";
+
+  Object.keys(grouped).forEach(category => {
+    html += `
+      <h3 class="slot-category-header">${category}</h3>
+      <div class="slot-category-group">
+    `;
+
+    grouped[category].forEach(slot => {
+      html += `
+        <div class="slot-card">
+          <h4>${slot.name}</h4>
+          <p><strong>Time:</strong> ${slot.start_time || ""} – ${slot.end_time || ""}</p>
+          <p><strong>Needed:</strong> ${slot.quantity}</p>
+          <button class="btn btn-primary" onclick="signupForSlot('${slot.id}')">
+            Sign Up
+          </button>
+        </div>
+      `;
+    });
+
+    html += `</div><hr/>`;
+  });
+
+  container.innerHTML = html;
+}
 }
 
 function renderSlots(slots) {
