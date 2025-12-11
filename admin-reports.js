@@ -13,6 +13,31 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ----------------------------
+// Build Event Lookup Map (Events → Title & Times)
+// ----------------------------
+async function buildEventLookup() {
+  const { data: events, error } = await supabase
+    .from("events")
+    .select("id, title, start_time, end_time");
+
+  if (error) {
+    console.error("Error loading events for lookup:", error);
+    return {};
+  }
+
+  const map = {};
+  events.forEach(e => {
+    map[e.id] = {
+      title: e.title,
+      start_time: e.start_time,
+      end_time: e.end_time || ""
+    };
+  });
+
+  return map;
+}
+
+// ----------------------------
 // Load events into dropdown
 // ----------------------------
 async function loadEvents() {
